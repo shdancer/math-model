@@ -5,54 +5,63 @@
 \usepackage[framemethod=TikZ]{mdframed}
 \usepackage{url}   % 网页链接
 \usepackage{subcaption} % 子标题
-\title{全国大学生数学建模竞赛编写的 \LaTeX{} 模板}
+\title{液滴铺展问题}
 \tihao{A}
-\baominghao{4321}
+\baominghao{}
 \schoolname{XX大学}
 \membera{ }
 \memberb{ }
 \memberc{ }
 \supervisor{ }
-\yearinput{2020}
-\monthinput{08}
-\dayinput{22}
+\yearinput{2021}
+\monthinput{09}
+\dayinput{11}
 
 \begin{document}
 
  \maketitle
  \begin{abstract}
-cumcmthesis 是为全国大学生数学建模竞赛编写的\LaTeX{}模板, 旨在让大家专注于 论文的内容写作, 而不用花费过多精力在格式的定制和调整上. 本手册是相应的参考, 其 中提供了一些环境和命令可以让模板的使用更为方便. 同时需要注意, 使用者需要有一 定的 \LaTeX{} 的使用经验, 至少要会使用常用宏包的一些功能, 比如参考文献，数学公式，图片使用，列表环境等等. 例子文件参看 \texttt{example.tex}.
+    水滴铺展问题是一个涉及到流体力学，表面现象等的综合性问题。人类
+对水滴在固体基板上铺张与稳定的研究从只能研究稳定态的杨氏方程开始，从表
+面吉布斯函数和表面张力出发，一直探索到拉普拉斯方程，直到近年来中国科学
+技术大学的最新研究成果杨氏方程的微观力学解释......小小的液滴之中蕴含
+了无数深刻的物理学知识。而如若液滴非稳定，其运动状态又只能用纳维尔-斯
+托克斯方程这样经典但又深奥难以解决的方程来描述。 
+我们学习研究了前人的成果，在这基础上对几种不同初始情况下的液滴建立
+了不同的模型来拟合它们形态各异的铺展现象，对比了不同模型之间结果的异
+同，并且讨论了他们的适用范围和模型建立的合理性。 
+在求解数学模型时，我们又运用了不同的数值计算方法去来求解一阶常微分
+方程和二阶偏微分方程等难以求得解析解的模型，还使用Matlab、COMSOL等软
+件对数值解进行可视化，且在Matlab中设计了合理的算法对第一问的模型进行综
+合求解。 
 
-\begin{mdframed} [%
-	roundcorner=5pt,
-	linecolor=gray!50,
-	outerlinewidth=0.5pt,
-	middlelinewidth=0.3pt, backgroundcolor=gray!2,
-innertopmargin=\topskip, frametitle={2020 年建模比赛格式变化说明},
-frametitlefont= \bfseries,frametitlerule=true,frametitlealignment =\raggedright\noindent,
-frametitlerulewidth=.5pt, frametitlebackgroundcolor=gray!2,]
-今年的格式变化主要就是三个地方，如下：
-\begin{enumerate}
-\item 论文第一页为承诺书，\textbf{\color{red}内容进行了调整}。
+针对问题一，我们论述了重力对于液滴形态影响极小，可以忽略不计，因此
+为了易于确定液滴铺展的形变过程，我们提出了球冠模型，将液滴形态随时间的
+变化问题转化为固液接触面半径随时间的变化问题。基于球面对称性，我们对于
+接触面三相交界处的液角微元进行受力分析，在综合考虑汽-液、液-液界面液体
+自身表面内聚力、固体基板对液角微元的吸引力、液滴重力产生的压力与液滴水
+平层流之间的黏性力后对于液角微元经行受力分析。并基于学界最新提出的杨氏
+方程微观力学解释，巧妙的将三相交界处三种毛细力与杨氏方程中体现的界面
+张力建立联系以确定毛细力取值函数，并与我们推导出的压力、粘滞力函数综合
+构建出描述液角微元运动状态的动力学模型，最终通过 Runge-Kutta 迭代法编程
+求解。 
 
-\item 编号页格式进行了格式调整。
+在问题二中，水滴将先在空气中进行加速下落，而受粘滞阻力其撞击速度不
+确定，我们根据其释放高度对于其收下落尾速度进行讨论。此后液滴由于撞击而
+产生形变，不能再简单地视为球缺型，且不便于使用微元法分析受力情况.我们
+采用了$Navier-Stokes$公式对液滴轮廓线进行建模，并通过$Level set$法对
+$Navier-Stokes$公式进行简化处理，使用 COMSOL 软件对模型进行求解。并验
+证了第一题所建模型的正确性。
 
-\item 这是19年调整了，这里延续说明下。论文正文（\textbf{\color{red}不要目录}，尽量控制在20页以内）；正文之后是论文附录（页数不限）。
+在问题三中，微液滴不再与固体基质作用，而是与液体平面相作用，此文中
+我们以油层作为碰撞液体壁。与固体基质碰撞时的不同是，液体平面会在碰撞过
+程中发生形变且需要判断水滴是否进入液体基质。我们根据两种液体的密度、动
+力黏度与界面张力计算其相场变量函数的迁移率，进而确定水滴在油相当中的状
+态，最后使用 COMSOL 软件进行仿真模拟。
 
-\end{enumerate}
-
-\end{mdframed}
 
 
-\url{https://www.latexstudio.net} 陆续推出了更优质的资源，欢迎学习 。
-
-欢迎大家到QQ群里沟通交流：91940767/478023327/640633524。我们也开通了问答区交流 \LaTeX{}技术：\url{https://ask.latexstudio.net}，欢迎大家前来交流，有问题就来这里，与大神零距离。
-
-\uwave{关注我们的微信公众号}：
-
-\centerline{\includegraphics[width=6cm]{gongzhonghao2}}
-
-\keywords{\TeX{}\quad  图片\quad   表格\quad  公式}
+\keywords{液滴碰撞\quad  流体力学\quad   液角微元\quad  COMSOL 多相流}
 \end{abstract}
 
 %目录  2019 明确不要目录，我觉得这个规定太好了
@@ -60,7 +69,7 @@ frametitlerulewidth=.5pt, frametitlebackgroundcolor=gray!2,]
 
 %\newpage
 
-\section{模板的基本使用}
+\section{模板的基本使用\cite{mckean1970nagumo}}
 
 要使用 \LaTeX{} 来完成建模论文，首先要确保正确安装一个 \LaTeX{} 的发行版本。
 
@@ -401,15 +410,8 @@ f(x) =
 
 
 %参考文献
-\begin{thebibliography}{9}%宽度9
-    \bibitem[1]{liuhaiyang2013latex}
-    刘海洋.
-    \newblock \LaTeX {}入门\allowbreak[J].
-    \newblock 电子工业出版社, 北京, 2013.
-    \bibitem[2]{mathematical-modeling}
-    全国大学生数学建模竞赛论文格式规范 (2020 年 8 月 25 日修改).
-    \bibitem{3} \url{https://www.latexstudio.net}
-\end{thebibliography}
+\bibliographystyle{plain}
+\bibliography{reference}
 
 \newpage
 %附录
