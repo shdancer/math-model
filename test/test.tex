@@ -1,0 +1,83 @@
+\documentclass{cumcmthesis}
+\usepackage[framemethod=TikZ]{mdframed}
+\usepackage{url}   % 网页链接
+\usepackage{subcaption} % 子标题
+\title{液滴问题}\tihao{A}
+\baominghao{4321}
+\schoolname{你的大学}
+\membera{成员A}
+\memberb{成员B}
+\memberc{成员C}
+\supervisor{指导老师}
+\yearinput{2017}
+\monthinput{08}
+\dayinput{22}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+    这是abstract。
+
+    \keywords{液滴碰撞\quad  流体力学\quad   液角微元\quad  COMSOL 多相流}
+\end{abstract}
+
+\section{问题重述}
+
+1. 对402家供应商
+
+\section{问题分析}
+\subsection{问题一分析}
+在问题一中，由于流体铺展形变过程中的形状难以确定，且液滴尺寸较小，
+重力对液滴形态影响较小，我们假设铺展过程中微液滴的形状始终为球冠状，采
+用球冠模型，以三个相互关联的量 $x$ 、$\theta$ 、$h$（分别为接触面半径，接触角，球
+冠高度），对微液滴的形状进行表征。
+我们通过分析液滴球缺与固体壁面接触面随时间的变化来确定液滴铺展的
+运动过程。在分析接触面的运动受力情况时，我们采用了微元法对接触面三相交
+界处的液角微元进行受力分析。对于液角所受的三种毛细力，我们参考了
+PHYSICAL REVIEW LETTERS, 并从《接触线毛细力平衡的微观成因》[1]一文中获
+得启发，依据学界最新提出的杨式方程的微观力学解释，构建了界面张力和毛细
+力之间的关系函数。在此基础上综合由液滴重力产生的压力、液滴水平层流之间
+的黏性力，以及固体基板对液角微元的吸引力，建立了动力学模型。并编写程序
+使用 Runge-Kutta 方法进行对二阶微分方程进行数值求解。
+\subsection{问题二分析}
+在问题二中，液滴运动主要分为两个阶段。即液滴下落但没有接触壁面的空
+中阶段和液滴以一定速度撞击壁面的撞击阶段。其中，液滴撞击壁面的过程是我
+们第二问主要研究的部分。
+对于空中阶段，我们建立了简单的动力学模型，使用了密立根对斯托克斯方
+程近似求解的结果，分析了液滴的收尾速度与释放高度的关系，并得出了液滴收
+尾速度最大值。此后，分析第二阶段之前，我们通过第一阶段的结论得出液滴只
+进行层流的结论，适当简化了第二阶段的模型。
+对于撞击壁面阶段，我们使用了\textbf{Navier-Stokes}方程对液滴进行建模，并
+使用了LSV方法，即水平集方法(Level Set)对难以直接求数值解的𝑁 − 𝑆方程进
+行化简，从而求得液滴表面随时间变化的数值模拟。并且使用数值分析软件
+𝐶𝑂MS𝑂𝐿内置的水平集求解器进行模型求解和验证。
+\subsection{问题三分析}
+在问题三中，微液滴不再与固体基质作用，而是与液体平面相作用，此题中
+我们以油层作为碰撞液体壁。由于碰撞涉及水、空气、汽油三种流体介质的相互
+作用，所以我们使用 COMSOL 三相流-相场模型模拟其碰撞过程。而对于水滴在油
+层中的最终稳定状态,我们通过两种液体的密度、动力黏度与界面张力计算其相
+场变量函数的迁移率进行定量判断。
+
+\section{模型的假设}
+1 . 假设问题一中液滴铺展过程中始终为球冠状
+
+2 . 假设液滴铺展过程中液体流动为水平的层流
+
+3 . 假设室温为 25℃，实验室内无扰动，固体壁面始终水平
+\section{符号说明}
+\begin{center}
+    \begin{tabular}{cc}
+        \hline\makebox[0.3\textwidth][c]{符号} &
+        \makebox[0.4\textwidth][c]{意义}                  \\
+        \hline $h$                             & 球缺高度 \\
+    \end{tabular}
+\end{center}
+\section{问题分析}
+\section{总结}
+
+\bibliographystyle{plain}
+\bibliography{reference}
+
+\begin{appendices}附录的内容。
+\end{appendices}
+\end{document}
