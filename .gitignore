@@ -5,6 +5,7 @@ tmp-pdfcrop-13964.tex
 *.log
 *.lot
 *.fls
+*.pdf
 *.out
 *.toc
 *.eoc
