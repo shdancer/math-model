@@ -84,7 +84,7 @@
     \end{tabular}
 \end{center}
 \section{模型的建立与求解}
-\subsection{问题一：确定50家最重要的供应商模型的建立与求解}
+\subsection{问题一模型的建立与求解}
 
 \subsubsection{评价指标的确定}
 量化分析供货商供货特征并做出评价首先应确定可以量化的相应指标，在题干语境下
@@ -397,51 +397,6 @@ TOPSIS法(又称为”优劣解距离法“）是根据有限个评价对象与�
         \end{figure}
 \end{description}
 \subsubsection*{0-1规划}
-\subsubsection{制定未来24周最经济的原材料订购方案}
-\subsubsection*{近似动态规划}
-\subsubsection{制定损耗最少的转运方案}
-此小问仍然可以等价为一个最优化问题。由于损耗律不确定，我们先模拟出了未来24周的损耗率情况，并将贪婪法与0-1背包（动态规划）模型结合建立制定最佳转运方案的模型，最后
-用$MATLAB$求解出最佳转运方案。
-\subsubsection*{制定最佳转运方案模型的建立}
-\begin{description}
-    \item[$\blacktriangleright$]\textbf{预测损耗率}  \\
-    制定转运方案即为我们已经得出的未来24周最优订购方案选择转运商。由于各转运商每周运输能力均相同。因此，选择转运商最主要的判断依据就是在原材料转运过程中不同转运商的原材料损耗率。
-    过往数据表明，在同一时间，不同转运商损耗率各不相同，且不同时间相同转运商损耗率也各不相同。因此，未来24周的损耗率不能明确确定，需要做出预测。我们对过往的240组数据均分为24组，用每组损耗率的平均水平模拟各转运商未来24周每周的损耗率。
-    \item[$\blacktriangleright$]\textbf{0-1背包（动态规划）模型与贪婪法结合}\\
-    现在此问题的已知条件变为了
-    \begin{itemize}
-        \item 有确定的订货方案，其中各订货商数量、订货数量均为已知
-        \item 有8家可选择的转运商，其中各转运商转运能力已知、运输每周各运输商运输损耗率虽不同但已知
-        \item 一个供应商每周尽量选择一家转运商，而一家转运商每周可以运输多家供应商的货物。
-    \end{itemize}
-    而我们要做的是确定每周使损耗最少的运输方案。首先，可以利用贪婪算法对每周八家供货商的损耗率排序。现考虑单独一周的运输量分配问题，对于这周损耗率最小的供应商，考虑两种一般的转运商选择方案。假设其分配到该转运商的运输量
-    \begin{equation}
-        C_{1j}<C_{2j}\nonumber
-    \end{equation}
-    其中$C$的第一个角标表示这两种一般方案，第二个角标表示转运商代号。那么由于两种方案的总运输量相同，一定对于另外一个转运商存在这种情况：
-    \begin{equation}
-        C_{1k}>C_{2k}\nonumber
-    \end{equation}
-    若这两种方案除此之外对于转运商的选择完全相同，假设用$a_{x}$表示不同转运商的损耗率，那么可以得出两种方案总损耗量的关系
-    \begin{equation}
-        \vartriangle V= V_1-V_2=a_i C_{1j}+ a_j C_{1k}-a_i C_{2j} + a_j C_{2k}=(a_i-a_j)\vartriangle C\nonumber
-    \end{equation}
-    其中最右边两项均为负数,可知 $\vartriangle V >0$,因此方案二损耗量更小，或者说将方案一的状态转移到方案二损耗量更小。这也意味着如果想要使运输损耗量尽可能的小，应该尽可能利用损耗率小的商家进行运输。此时该问题对于单独一个转运商就转化为了0-1背包问题，
-    接下来只需在贪婪法得出的转运商损耗率排名名单上从小到大使用0-1动态规划即可。
-\end{description}
-\subsubsection*{制定最佳转运方案模型的程序求解}
-\begin{description}
-    \item[$\blacktriangleright$] \textbf{Step1} 读取转运商数据与订购方案数据。
-    \item[$\blacktriangleright$] \textbf{Step2} 对转运商数据分组处理，得到未来24周损耗率模拟值
-    \item[$\blacktriangleright$] \textbf{Step3} 使用贪婪算法得出损耗率从小到大的转运商排序名单
-    \item[$\blacktriangleright$] \textbf{Step4} 使用0-1背包（动态规划）算法
-        \begin{itemize}
-            \item \textbf{Step4.1}遍历所有天数
-            \item \textbf{Step4.2}遍历损耗率序列
-            \item \textbf{Step4.3}使用状态转移方程
-        \end{itemize}
-    \item[$\blacktriangleright$] \textbf{Step5} 输出转运方案
-\end{description}
 \begin{description}
     \item[$\blacktriangleright$] \textbf{0-1规划概述}\par
         在规划问题中，若待规划向量的取值只能取0和1，则其称为0-1规划问题。
@@ -506,8 +461,7 @@ TOPSIS法(又称为”优劣解距离法“）是根据有限个评价对象与�
 
 
 \end{description}
-
-\subsubsection{近似动态规划}
+\subsubsection{近似动态规划确定未来24周的最佳订货方案}
 在挑选出恰当的供应商后，还要对供应商以周为单位确定订货方案
 ，经过分析，我们参考了文献，使用了近似动态规划的方法求解问题。
 \subsubsection*{动态规划概述}
@@ -537,7 +491,7 @@ TOPSIS法(又称为”优劣解距离法“）是根据有限个评价对象与�
         动态规划的核心之一是状态转移方程(Bellman)方程，向后逐步求解Bellman返程是常规动态规划的基本思路
         ，我们考虑从一个周转移到下一个周的一个\textbf{决策}$\bm{x}$，其转移方程为：
         \begin{equation}
-            V_t(I) = V_{t-1}(I - \sum \bm{x} + b) + C(V_t,\bm{x})
+            V_t(I) = V_{t-1}(I - \sum \bm{x} + b) + C(V_t,\bm{x}) \quad t = 1,2,\cdots , n-1
             \label{状态转移方程}
         \end{equation}
     \item[$\blacktriangleright$] \textbf{边界条件} \\
@@ -553,9 +507,109 @@ TOPSIS法(又称为”优劣解距离法“）是根据有限个评价对象与�
         $$
 \end{description}
 \subsubsection*{动态规划的不足和近似动态规划的引入}
+动态规划在处理这种阶段性问题时候有得天独厚的优势。但也有不足之处，例如
+动态规划在处理\textbf{决策$\bm{x}$}的时候，由于其为子集型动态规划，若要
+枚举尽所有的可能性，则每步\textbf{有$2^{31}$种可能性}，此时这会出现成为维度灾的时间复杂度
+急速膨胀的情况。其次，状态的分量$I$是一个\textbf{连续的变量而不是离散的变量}，故使用
+动态规划则会出现状态空间过于庞大的情况。\par
+因此我们使用了名为近似动态规划\cite{RN10}的动态规划改进算法，用于处理维度灾和非连续分量。
+近似动态规划主要用，\textbf{分段聚类估值函数}处理连续变量值，用\textbf{探索-开发行为}进行决策的缩减
+，他完美的解决了动态规划在具体实现上的难点。其次，作为随机算法，近似动态规划
+收敛快，能够较好的收敛到精确最优解。
 
 \subsubsection*{近似动态规划模型建立}
-\subsubsection*{近似动态规划程序设计}
+建立近似动态规划模型时，要进一步细化动态规划的细节，并且对完善的动态规划进行
+近似动态规划的特殊处理。
+\begin{description}
+    \item[$\blacktriangleright$] \textbf{预测供货量} \\
+        制定采购方案即在选择出的31家所需最少供应商期初上指定方案。选择供货商最的判断依据就要对每个周的供货量进行量化。
+        过往数据表明，在同一时间，不同供货商供货量各不相同。因此，未来24周的供货量率不能明确确定，需要做出预测。我们对过往的240组数据均分为24组，用每组供货量的平均水平模拟各供货商未来24周每周平均的供货量。
+    \item[$\blacktriangleright$] \textbf{价格函数} \\
+        由于购买材料时，基本不受外界因素影响，只与材料种类有关，所以$C(V_t,\bm{x})$
+        可以简化为$C(\bm{x})$:
+        $$
+            C(\bm{x}) = \bm{c}^{\text{T}}\bm{x}
+        $$
+        其中$\bm{c}^{\text{T}}$是各公式售卖对应材料的价值和体积的综合常量值。
+    \item[$\blacktriangleright$] \textbf{最近聚合估值} \\
+        为了解决连续变量问题，我们需要使用估值算法将某些计算过对式\ref{状态转移方程}进行简化：
+        $$
+            V_t(I) = \overline{ V }_{t-1} (I - \sum \bm{x} + b) + C(V_t,\bm{x})
+        $$
+        其中$\overline{V}_{t-1}$为$V_{t-1}$的估计值，也称作观测值。
+        通常我们的估计函数有聚合法，表查询法，基函数法。而聚合法常用的又有分段聚合法，多层聚合法，
+        最近聚合法。由于我们在前面已经对402个供货商进行了两轮筛选，剩下的供货商优秀度高，所以我们
+        采用编写更简单的最近聚合法。他的表述为：
+        $$
+            \overline{V}_t(I) = H(V_t(I)) = V_{t-1}(\left. X \right| \min_{dist(I,X)})
+        $$
+        即取离$I$最近的已有的值作为他的观测值。
+    \item[$\blacktriangleright$] \textbf{探索-开发行为} \\
+        除连续变量问题之外，由于厂商只有照单收买和不下单两种选择，
+        故此动态规划是子集型动态规划，他每一步决策数量都十分庞大。
+        近似动态规划中，主要以探索-开发分别进行，以参数控制比例。但此问中显然不能进行开发行为，
+        因为任意一次开发都有高达$2^{31}$种情况。但是若是纯粹进行探索
+        的话，很容易是算法进入次优解而失去动态规划的意义。\par
+        所以我们采用了探索-开发行为，即先对决策进行随机，之后再根据随机策略进行开发。
+        这样既能兼顾开发能搜索到更多状态，也避免收敛到次优解。
+\end{description}
+
+\subsubsection*{近似动态规划程序流程}
+如图\ref{fig:6}，近似动态规划程序流程稍显复杂，需要一定编码技巧。
+在实际实现中，使用递归的方法而不是迭代的方法进行编写。
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[scale = 0.5]{guihua.png}
+    \centering
+    \caption{近似动态规划算法图} \label{fig:6}
+\end{figure}
+
+
+\subsubsection{制定损耗最少的转运方案}
+此小问仍然可以等价为一个最优化问题。由于损耗律不确定，我们先模拟出了未来24周的损耗率情况，并将贪婪法与0-1背包（动态规划）模型结合建立制定最佳转运方案的模型，最后
+用$MATLAB$求解出最佳转运方案。
+\subsubsection*{制定最佳转运方案模型的建立}
+\begin{description}
+    \item[$\blacktriangleright$]\textbf{预测损耗率}  \\
+    制定转运方案即为我们已经得出的未来24周最优订购方案选择转运商。由于各转运商每周运输能力均相同。因此，选择转运商最主要的判断依据就是在原材料转运过程中不同转运商的原材料损耗率。
+    过往数据表明，在同一时间，不同转运商损耗率各不相同，且不同时间相同转运商损耗率也各不相同。因此，未来24周的损耗率不能明确确定，需要做出预测。我们对过往的240组数据均分为24组，用每组损耗率的平均水平模拟各转运商未来24周每周的损耗率。
+    \item[$\blacktriangleright$]\textbf{0-1背包（动态规划）模型与贪婪法结合}\\
+    现在此问题的已知条件变为了
+    \begin{itemize}
+        \item 有确定的订货方案，其中各订货商数量、订货数量均为已知
+        \item 有8家可选择的转运商，其中各转运商转运能力已知、运输每周各运输商运输损耗率虽不同但已知
+        \item 一个供应商每周尽量选择一家转运商，而一家转运商每周可以运输多家供应商的货物。
+    \end{itemize}
+    而我们要做的是确定每周使损耗最少的运输方案。首先，可以利用贪婪算法对每周八家供货商的损耗率排序。现考虑单独一周的运输量分配问题，对于这周损耗率最小的供应商，考虑两种一般的转运商选择方案。假设其分配到该转运商的运输量
+    \begin{equation}
+        C_{1j}<C_{2j}\nonumber
+    \end{equation}
+    其中$C$的第一个角标表示这两种一般方案，第二个角标表示转运商代号。那么由于两种方案的总运输量相同，一定对于另外一个转运商存在这种情况：
+    \begin{equation}
+        C_{1k}>C_{2k}\nonumber
+    \end{equation}
+    若这两种方案除此之外对于转运商的选择完全相同，假设用$a_{x}$表示不同转运商的损耗率，那么可以得出两种方案总损耗量的关系
+    \begin{equation}
+        \Delta V= V_1-V_2=a_i C_{1j}+ a_j C_{1k}-a_i C_{2j} + a_j C_{2k}=(a_i-a_j)\vartriangle C\nonumber
+    \end{equation}
+    其中最右边两项均为负数,可知 $\Delta V >0$,因此方案二损耗量更小，或者说将方案一的状态转移到方案二损耗量更小。这也意味着如果想要使运输损耗量尽可能的小，应该尽可能利用损耗率小的商家进行运输。此时该问题对于单独一个转运商就转化为了0-1背包问题，
+    接下来只需在贪婪法得出的转运商损耗率排名名单上从小到大使用0-1动态规划即可。
+\end{description}
+\subsubsection*{制定最佳转运方案模型的程序求解}
+\begin{description}
+    \item[$\blacktriangleright$] \textbf{Step1} 读取转运商数据与订购方案数据。
+    \item[$\blacktriangleright$] \textbf{Step2} 对转运商数据分组处理，得到未来24周损耗率模拟值
+    \item[$\blacktriangleright$] \textbf{Step3} 使用贪婪算法得出损耗率从小到大的转运商排序名单
+    \item[$\blacktriangleright$] \textbf{Step4} 使用0-1背包（动态规划）算法
+        \begin{itemize}
+            \item \textbf{Step4.1}遍历所有天数
+            \item \textbf{Step4.2}遍历损耗率序列
+            \item \textbf{Step4.3}使用状态转移方程
+        \end{itemize}
+    \item[$\blacktriangleright$] \textbf{Step5} 输出转运方案
+\end{description}
+
+
 
 \subsection{问题三模型的建立与求解}
 \subsection{问题四模型的建立与求解}
