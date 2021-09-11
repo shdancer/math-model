@@ -21,7 +21,7 @@
 \begin{abstract}
     这是abstract。
 
-    \keywords{评价类模型\quad 优化问题\quad  近似动态规划}
+    \keywords{评价类模型\quad 优化问题\quad  动态规划}
 \end{abstract}
 
 \section{问题重述}
@@ -53,7 +53,9 @@
 问题二共含有三个子问题。首先要根据第一问结果选择能够满足公司生产需求的最少公司数，我们将此问题划归成了一个简单的优化问题，并且综合了两种优化方法建立满足公司生产的数学模型并对其求解：贪心
 算法和MATLAB中内置函数迭代求解0-1规划的方法。根据求解结果我们确定了最少商家数量供应方案中的供应商名单，并且为接下来的近似动态规划算法作预处理。此后要根据此名单制定未来24周的厂家最经济订货方案，必然要对每个周
 的数据做统计学处理之后进行规划。此时题目状态明确，转移方程清晰，可以使用动态规划算法求解。但常规的动态规划方案是子集型动态规划，其状态空间异常庞大，且其状态也非离散值
-而是连续值，故只能退而求其次地选择近似动态规划。近似动态规划能够相当程度减少动态规划带来的维度爆炸，并在可观的时间内找到近似的最优解。最后我们
+而是连续值，故只能退而求其次地选择近似动态规划。近似动态规划能够相当程度减少动态规划带来的维度灾，并在可观的时间内找到近似的最优解。最后，
+当供货方案确定之后，在尽量保证供应商一周以内不切换承运商的情况下，问题划归为多个背包的0-1背包问题，其优化目标函数为损耗量之和最小。此时
+使用贪心算法对背包排序和0-1背包动态规划算法对运货量规划，即可获得最优送货策略，且结果是精确的。
 
 \subsection{问题三分析}
 \subsection{问题四分析}
@@ -394,8 +396,51 @@ TOPSIS法(又称为”优劣解距离法“）是根据有限个评价对象与�
 
 \end{description}
 \subsubsection*{0-1规划}
-
-
+\subsubsection{制定未来24周最经济的原材料订购方案}
+\subsubsection*{近似动态规划}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+\subsubsection{制定损耗最少的转运方案}
+此小问仍然可以等价为一个最优化问题。由于损耗律不确定，我们先模拟出了未来24周的损耗率情况，并将贪婪法与0-1背包（动态规划）模型结合建立制定最佳转运方案的模型，最后
+用$MATLAB$求解出最佳转运方案。
+\subsubsection*{制定最佳转运方案模型的建立}
+\begin{description}
+    \item[$\blacktriangleright$]\textbf{预测损耗率}  \\
+    制定转运方案即为我们已经得出的未来24周最优订购方案选择转运商。由于各转运商每周运输能力均相同。因此，选择转运商最主要的判断依据就是在原材料转运过程中不同转运商的原材料损耗率。
+    过往数据表明，在同一时间，不同转运商损耗率各不相同，且不同时间相同转运商损耗率也各不相同。因此，未来24周的损耗率不能明确确定，需要做出预测。我们对过往的240组数据均分为24组，用每组损耗率的平均水平模拟各转运商未来24周每周的损耗率。
+    \item[$\blacktriangleright$]\textbf{0-1背包（动态规划）模型与贪婪法结合}\\
+    现在此问题的已知条件变为了
+    \begin{itemize}
+      \item 有确定的订货方案，其中各订货商数量、订货数量均为已知
+      \item 有8家可选择的转运商，其中各转运商转运能力已知、运输每周各运输商运输损耗率虽不同但已知
+      \item 一个供应商每周尽量选择一家转运商，而一家转运商每周可以运输多家供应商的货物。
+    \end{itemize}
+    而我们要做的是确定每周使损耗最少的运输方案。首先，可以利用贪婪算法对每周八家供货商的损耗率排序。现考虑单独一周的运输量分配问题，对于这周损耗率最小的供应商，考虑两种一般的转运商选择方案。假设其分配到该转运商的运输量
+    \begin{equation}
+        C_{1j}<C_{2j}\nonumber
+    \end{equation}
+    其中$C$的第一个角标表示这两种一般方案，第二个角标表示转运商代号。那么由于两种方案的总运输量相同，一定对于另外一个转运商存在这种情况：
+    \begin{equation}
+        C_{1k}>C_{2k}\nonumber
+    \end{equation}
+    若这两种方案除此之外对于转运商的选择完全相同，假设用$a_{x}$表示不同转运商的损耗率，那么可以得出两种方案总损耗量的关系
+    \begin{equation}
+            \vartriangle V= V_1-V_2=a_i C_{1j}+ a_j C_{1k}-a_i C_{2j} + a_j C_{2k}=(a_i-a_j)\vartriangle C\nonumber
+    \end{equation}
+    其中最右边两项均为负数,可知 $\vartriangle V >0$,因此方案二损耗量更小，或者说将方案一的状态转移到方案二损耗量更小。这也意味着如果想要使运输损耗量尽可能的小，应该尽可能利用损耗率小的商家进行运输。此时该问题对于单独一个转运商就转化为了0-1背包问题，
+    接下来只需在贪婪法得出的转运商损耗率排名名单上从小到大使用0-1动态规划即可。
+\end{description}
+\subsubsection*{制定最佳转运方案模型的程序求解}
+\begin{description}
+    \item[$\blacktriangleright$] \textbf{Step1} 读取转运商数据与订购方案数据。
+    \item[$\blacktriangleright$] \textbf{Step2} 对转运商数据分组处理，得到未来24周损耗率模拟值
+    \item[$\blacktriangleright$] \textbf{Step3} 使用贪婪算法得出损耗率从小到大的转运商排序名单
+    \item[$\blacktriangleright$] \textbf{Step4} 使用0-1背包（动态规划）算法
+    \begin{itemize}
+     \item \textbf{Step4.1}遍历所有天数
+     \item \textbf{Step4.2}遍历损耗率序列
+     \item \textbf{Step4.3}使用状态转移方程
+    \end{itemize}
+    \item[$\blacktriangleright$] \textbf{Step5} 输出转运方案
+\end{description}
 \subsection{问题三模型的建立与求解}
 \subsection{问题四模型的建立与求解}
 \section{模型的分析与检验}
@@ -435,6 +480,7 @@ providesheet = '供应商的供货量（m³）';
 [power, text] = xlsread(filename,providesheet);
 text = text(2:403,2);
 
+%将三种原料无差异化
 for i = 1:402
     divnum = 0;
     if char(text(i)) == 'A'
@@ -448,7 +494,8 @@ for i = 1:402
 end
 
 xlswrite('转化产能表.xlsx',power);
-    \end{lstlisting}
+\end{lstlisting}
+\subsection{使用熵权法为指标客观赋权}
 \begin{lstlisting}[language=matlab]
 filename = '转化产能表.xlsx';
 ordersheet = '企业的订货量（m³）';
