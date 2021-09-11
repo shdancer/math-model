@@ -5,6 +5,7 @@
 \usepackage{multirow}
 \usepackage{longtable}
 \usepackage{graphicx}
+\usepackage{bm}
 \title{生产企业原料的订购与运输问题}\tihao{A}
 \baominghao{4321}
 \schoolname{你的大学}
@@ -66,6 +67,7 @@
 2 . 假设不考虑货物交接流程、商家信用度、配合度、服务水平态度等细节问题
 
 3 . 假设题目时间范围内该企业、供应商与转运商的生产能力都相对稳定，不发生重大变化。
+
 \section{符号说明}
 \begin{center}
     \begin{tabular}{cc}
@@ -375,25 +377,24 @@ TOPSIS法(又称为”优劣解距离法“）是根据有限个评价对象与�
 
 \subsection{问题二模型的建立与求解}
 \subsubsection{供货商范围的确定}
- 首先出于将复杂问题拆解为小问题的考虑，其次也是为之后的动态规划计算做铺垫，我们首先使用了
+首先出于将复杂问题拆解为小问题的考虑，其次也是为之后的动态规划计算做铺垫，我们首先使用了
 贪心算法和0-1规划对50个重要供货商进一步排序使得他们更加契合本问的要求。
 \subsubsection*{贪心算法}
 \begin{description}
     \item[$\blacktriangleright$] \textbf{贪心算法概述}\par
-对于一个具有最优子结构的问题，可以对其使用贪心算法求解。结合熵权法分析得出，供应商的供货能力是影响其评价体系的主要因素。对于此问题，如果以过去五年的平均供货量作衡量供应商
-对厂商生产需求的重要程度的指标，任意供应商$A,B$的平均供货量在排序交换之后是没有变化的，这时我们也称
-以平均供货量作为评价标准下，选择供应商具有最优子结构。此时只需要贪心地根据平均供货量从大到小选择供应商即可。但
-要注意的是，在求解平均供货量数据中由于厂家未下订单的数据不具参考价值，应当剔除！
-\item[$\blacktriangleright$] \textbf{贪心算法程序设计}\par
-如图\ref{fig:4}所示，贪心算法主要由判断、计算、得出结果三部分组成。其中的计算与得出结果都比较容易。
-而判断是否具有最优子结构往往是不容易想到的，此题中供货商之间的平均供货量彼此无关且顺序不影响指标，所以其为最优子结构。
-\begin{figure}[H]
-    \centering
-    \includegraphics[scale = 0.6]{test.png}
-    \centering
-    \caption{贪心算法流程} \label{fig:4}
-\end{figure}
-
+        对于一个具有最优子结构的问题，可以对其使用贪心算法求解。结合熵权法分析得出，供应商的供货能力是影响其评价体系的主要因素。对于此问题，如果以过去五年的平均供货量作衡量供应商
+        对厂商生产需求的重要程度的指标，任意供应商$A,B$的平均供货量在排序交换之后是没有变化的，这时我们也称
+        以平均供货量作为评价标准下，选择供应商具有最优子结构。此时只需要贪心地根据平均供货量从大到小选择供应商即可。但
+        要注意的是，在求解平均供货量数据中由于厂家未下订单的数据不具参考价值，应当剔除！
+    \item[$\blacktriangleright$] \textbf{贪心算法程序设计}\par
+        如图\ref{fig:4}所示，贪心算法主要由判断、计算、得出结果三部分组成。其中的计算与得出结果都比较容易。
+        而判断是否具有最优子结构往往是不容易想到的，此题中供货商之间的平均供货量彼此无关且顺序不影响指标，所以其为最优子结构。
+        \begin{figure}[H]
+            \centering
+            \includegraphics[scale = 0.6]{test.png}
+            \centering
+            \caption{贪心算法流程} \label{fig:4}
+        \end{figure}
 \end{description}
 \subsubsection*{0-1规划}
 \subsubsection{制定未来24周最经济的原材料订购方案}
@@ -441,12 +442,79 @@ TOPSIS法(又称为”优劣解距离法“）是根据有限个评价对象与�
     \end{itemize}
     \item[$\blacktriangleright$] \textbf{Step5} 输出转运方案
 \end{description}
+\begin{description}
+    \item[$\blacktriangleright$] \textbf{0-1规划概述}\par
+        在规划问题中，若待规划向量的取值只能取0和1，则其称为0-1规划问题。
+        考虑线性规划问题都有迭代解法，所以使用$MATLAB$的$linprog$函数可以方便的
+        解决此类线性规划问题。
+    \item[$\blacktriangleright$] \textbf{0-1规划模型建立}\par
+        在此题中，一个厂商要不要选择该供应商作为供货方案是一个0-1变量，由于
+        使用0-1规划，所以我们可以细粒度的通过每一周厂商的历史供货情况做一个规划。
+        设50家企业的选择情况是向量$x$，厂商的供货情况用矩阵$A$进行表示（$A_{i,j}$表示$i$厂商
+        第$j$周的供货情况）。
+        \begin{equation}
+            x_i = \left\{
+            \begin{aligned}
+                0,\quad & x \in notChosen \\
+                1 \quad & x \in Chosen
+            \end{aligned}
+            \right.,\quad i=0,1,\cdots,50 \nonumber
+        \end{equation}
+        又因为，每周库存量必须大于下两周的制作量$b$。故每周的限定条件为：
+        \begin{equation}
+            \begin{aligned}
+                \sum_{i=1}^{50} A_{i,j} \cdot x_i & + I_{j-1}  > b                                             \\
+                where. I_{j}  = I_{j-1}           & + \sum_{i=1}^{50} A_{i,j} \cdot x_i + I_{j-1} -b \nonumber
+            \end{aligned}
+        \end{equation}
+        由于$I$是一个递推公式,经过化简可以得到矩阵形式的限定条件：
+        \begin{equation}
+            A^{*} \bm{x} > \bm{b^{*}} \nonumber
+        \end{equation}
+        {\small
+        \begin{equation}
+            \begin{aligned}
+                A^* =
+                \begin{pmatrix}
+                    A_{1,1}                                & A_{1,2}                                & \cdots & A_{1,50}                                  \\
+                    A_{1,1} + A_{2,1}                      & A_{1,2} + A_{2,2}                      & \cdots & A_{1,50} + A_{2,50}                       \\
+                    \vdots                                 & \vdots                                 & \ddots & \vdots                                    \\
+                    A_{1,1} + A_{2,1} + \cdots + A_{240,1} & A_{1,2} + A_{2,2} + \cdots + A_{240,2} & \cdots & A_{1,50} + A_{2,50} + \cdots + A_{240,50}
+                \end{pmatrix} \nonumber
+            \end{aligned}
+        \end{equation}
+        }
+        \begin{equation}
+            b^*_i = b_i \cdot i \nonumber
+        \end{equation}
+        所以规划问题总体表述为:
+        \begin{equation}
+            \begin{aligned}
+                \min_x \bm{e^t}\cdot \bm{x} \\
+                s.t. \left\{
+                \begin{aligned}
+                    A^*\bm{x} > b^* \\
+                    x_i \in intcon
+                \end{aligned}
+                \right.
+            \end{aligned} \label{规划问题表述}
+        \end{equation}
+
+    \item[$\blacktriangleright$] \textbf{0-1规划程序设计}\par
+        由式\ref{规划问题表述}，我们直接调用$MATLAB$中的$linprog$函数进行
+        0-1线性规划。
+
+
+\end{description}
+
+\subsubsection{}
+
 \subsection{问题三模型的建立与求解}
 \subsection{问题四模型的建立与求解}
 \section{模型的分析与检验}
 \subsection{问题一结果的分析与检验}
-对于问题一，可以通过对比两种算法的运行结果来检验得到结果的正确性。通过对比两个五十家重要供应商名单的列表，容易发现：结合了熵权法的TOPSIS法与层次分析法得到的结果无论是涵盖的供应商还是其排列序号都几乎
-吻合。两种不同评价方式得出几乎一致的结果，说明二者互相佐证了结论的正确性\par
+对于问题一，可以通过对比两种算法的运行结果来检验得到结果的正确性。通过对比两个五十家重要供应商名单的列表，容易发现：结合了熵权法的TOPSIS法与层次分析法得到的结果无论是涵盖的供应商还是其排列顺序都几乎
+吻合。两种不同评价方式得出几乎一致的结果，说明二者互相佐证了结论的正确性。\par
 此外，我们使用本问确定的四项评价指标对全部402家企业进行了\textbf{聚类分析}，由图可以发现
 \begin{figure}[htbp]
     \centering
@@ -462,7 +530,7 @@ TOPSIS法(又称为”优劣解距离法“）是根据有限个评价对象与�
 
 \section{模型的评价、改进与推广}
 \begin{description}
-\item[$\blacktriangleright$] 第二问中贪心法的使用虽然可以较容易的对平均供货量做出衡量，但是实际考虑制定满足企业生产的方案时不只有平均供货量这一个评判指标，故单纯考虑贪心法具有一定局限性，还需要综合考虑其他计算方法。
+    \item[$\blacktriangleright$] 第二问中贪心法的使用虽然可以较容易的对平均供货量做出衡量，但是实际考虑制定满足企业生产的方案时不只有平均供货量这一个评判指标，故单纯考虑贪心法具有一定局限性，还需要综合考虑其他计算方法。
 \end{description}
 
 %参考文献
@@ -471,9 +539,9 @@ TOPSIS法(又称为”优劣解距离法“）是根据有限个评价对象与�
 \newpage
 %附录
 \begin{appendices}
-\section{熵权法--matlab程序}
-\subsection{将生产三种原料企业的产能转化为同类型}
-\begin{lstlisting}[language=matlab]
+    \section{熵权法--matlab程序}
+    \subsection{将生产三种原料企业的产能转化为同类型}
+    \begin{lstlisting}[language=matlab]
 filename = '附件1 近5年402家供应商的相关数据.xlsx';
 providesheet = '供应商的供货量（m³）';
 
@@ -564,8 +632,8 @@ function ret = handleZero(array)
   ret = array;
 end
  \end{lstlisting}
- \section{TOPSIS法--matlab程序}
- \begin{lstlisting}[language=matlab]
+    \section{TOPSIS法--matlab程序}
+    \begin{lstlisting}[language=matlab]
 %W,P 需要导入w(4X1)p(402X4)两个矩阵
 clear;
 
@@ -623,8 +691,8 @@ paiming =temp(1:50);
 temp = [paiming,index(paiming,:),C(paiming,:)];
 xlswrite("结果排名",temp,"sheet1");
 \end{lstlisting}
-\section{层次分析法--matlab程序}
-\begin{lstlisting}[language=matlab]
+    \section{层次分析法--matlab程序}
+    \begin{lstlisting}[language=matlab]
 %读入数据
 filename = '标准化矩阵和权重.xlsx';
 matrixsheet = '归一矩阵';
