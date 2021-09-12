@@ -92,7 +92,7 @@
 \section{模型的假设}
 1 . 假设题中402家供货商供货供货品质均无差别且满足该企业要求。
 
-2 . 假设不考虑货物交接流程、商家信用度、配合度、服务水平态度等细节问题
+2 . 假设不考虑货物交接流程、商家信用度、配合度、服务水平态度等细节问题.
 
 3 . 假设题目时间范围内该企业、供应商与转运商的生产能力都相对稳定，不发生重大变化。
 
@@ -117,6 +117,7 @@
         $V_t(S_t(I))$                          & 在第t周处于$S_t(I)$的总最小消耗            \\
         $C(V_t,x)$                             & 第t周在决策$x$下的该周消耗量               \\
         $T$                                    & 运输商的运输量                             \\
+       $ g^{t\varepsilon}$                     & 切比雪夫法中的适应度函数\\
         \hline
     \end{tabular}
 \end{center}
@@ -561,8 +562,8 @@ TOPSIS法(又称为”优劣解距离法“）是根据有限个评价对象与�
 近似动态规划的特殊处理。
 \begin{description}
     \item[$\blacktriangleright$] \textbf{预测供货量} \\
-        制定采购方案即在选择出的31家所需最少供应商其中制定方案。选择供货商最的判断依据就要对每个周的供货量进行量化。
-        过往数据表明，在同一时间，不同供货商供货量各不相同。因此，未来24周的供货量率不能明确确定，需要做出预测。我们对过往的240组数据均分为24组，用每组供货量的平均水平模拟各供货商未来24周每周平均的供货量。
+        制定采购方案即在选择出的31家供应商中制定方案。选择最少供货商的判断依据就要对每个周的供货量进行量化。
+        过往数据表明，在同一时间段，不同供货商供货量各不相同。因此，未来24周的供货量不能明确确定，需要做出预测。我们对过往的240组数据均分为24组，用每组供货量的平均水平模拟各供货商未来24周每周的供货量。
     \item[$\blacktriangleright$] \textbf{价格函数} \\
         由于购买材料时，基本不受外界因素影响，只与材料种类有关，所以$C(V_t,\bm{x})$
         可以简化为$C(\bm{x})$:
@@ -694,6 +695,7 @@ $MOEA/D$算法于2007年由张清富等人提出，其特点是能够将多目�
 重复此步骤直至筛选出最优方案。
 
 \subsubsection{问题三模型的求解}
+问题三使用MATLAB编程求解，程序算法设计如下
 \begin{figure}[H]
     \centering
     \includegraphics[scale = 0.5]{three.png}
@@ -748,8 +750,9 @@ $MOEA/D$算法于2007年由张清富等人提出，其特点是能够将多目�
 其中竖直方向的坐标轴表示企业供货能力大小，水平方向两条轴表示供货精确度。可以发现，位列50家重要供应商名单中的企业几乎全部被聚类算法划分到了“具有较强供货能力”一类，
 而根据本道题其他问的分析与熵权法客观赋权得到的结果都可以说明供货能力是评价供应商对企业重要程度的最主要因素，名单企业几乎均位列此类，充分说明了问题一求解结果的合理性。
 \subsection{问题二结果的分析与检验}
-以过去5年订货量的平均值作为满足生产需要的最低指标
-对问题二使用贪心算法进行求解，得到至少'结果排序'中的前31家企业进行供货能够满足生产需求，但是贪心算法具有短视性，同时按照4项指标进行排序的供货商不一定是该问题的最优解，故使用动态规划进行求解，同时使用近似动态规划解决维度灾问题
+我们以过去5年订货量的平均值作为满足生产需要的最低指标求解，得到当至少"结果排序"中的前31家企业进行供货时能够满足生产需求。此时最经济订购方案的总花费收敛在59万元附近，而最佳转运方案的损耗量为31.2881立方米。但是贪心算法具有短视性，同时按照4项指标进行排序的供货商不一定是该问题的最优解，故使用动态规划进行求解。\\
+
+同时使用近似动态规划解决维度灾问题
 由于该算法需要 '开发' 和 '探索' 故得到的结果具有不稳定性，我们取多次求得的均值填入附录A中.
 \subsection{问题三结果的分析与检验}
 我们将结果对于两个优化目标分别进行分析
@@ -795,7 +798,6 @@ $MOEA/D$算法于2007年由张清富等人提出，其特点是能够将多目�
 \begin{description}
     \item[$\blacktriangleright$] 第二问中贪心法的使用虽然可以较容易的对平均供货量做出衡量，但是实际考虑制定满足企业生产的方案时不只有平均供货量这一个评判指标，故单纯考虑贪心法具有一定局限性，还需要综合考虑其他计算方法。
     \item[$\blacktriangleright$] 第二问近似动态规划虽然可以避免维度灾，但是由于存在开发和探索两个选项，因此结果存在随机性，并且满足生产需要的阈值由人为评定，具有较大的主观因素 ，运行多次发现结果稳定性并不理想。
-下图为三次运行的对应cost结果  
 
 \end{description}
 \begin{description}
@@ -831,7 +833,7 @@ $MOEA/D$算法于2007年由张清富等人提出，其特点是能够将多目�
                 \end{tabular}}
         \end{center}
     \end{table}
-    \section{熵权法--matlab程序}
+    \section{问题一：熵权法为各项指标赋权--matlab程序}
     \subsection{将生产三种原料企业的产能转化为同类型}
     \begin{lstlisting}[language=matlab]
 filename = '附件1 近5年402家供应商的相关数据.xlsx';
@@ -924,7 +926,7 @@ function ret = handleZero(array)
   ret = array;
 end
  \end{lstlisting}
-    \section{TOPSIS法--matlab程序}
+    \section{问题一：TOPSIS法--matlab程序}
     \begin{lstlisting}[language=matlab]
 %W,P 需要导入w(4X1)p(402X4)两个矩阵
 clear;
@@ -983,7 +985,7 @@ paiming =temp(1:50);
 temp = [paiming,index(paiming,:),C(paiming,:)];
 xlswrite("结果排名",temp,"sheet1");
 \end{lstlisting}
-    \section{层次分析法--matlab程序}
+    \section{问题一：层次分析法--matlab程序}
     \begin{lstlisting}[language=matlab]
 %读入数据
 filename = '标准化矩阵和权重.xlsx';
@@ -1003,28 +1005,113 @@ top50 = flipud(I');
 top50 = top50(1:50);
 xlswrite('AHP结果.xlsx',[top50, zhi(top50,:),score(top50)']);
 \end{lstlisting}
-    \section{层次分析法--matlab程序}
-    \begin{lstlisting}[language=matlab]
+\section{问题二：求解最少供应商数量}
+\subsection{方法一：贪心算法--matlab程序}
+\begin{lstlisting}[language=matlab]
+clear;
 %读入数据
-filename = '标准化矩阵和权重.xlsx';
-matrixsheet = '归一矩阵';
-weightsheet = '权重';
+[orderdata,ordertext] =xlsread("附件1 近5年402家供应商的相关数据","企业的订货量（m³）");
+givedata = xlsread("附件1 近5年402家供应商的相关数据","供应商的供货量（m³）");
 
-matrix = xlsread(filename,matrixsheet);
-weight = xlsread(filename,weightsheet);
-zhi = xlsread('指标.xlsx');
+%将各原料对应量转化为产品量
+for i = 2:403                           
+    div =0;
+    if ordertext{i,2} =='A'
+        div = 0.6;
+    elseif ordertext{i,2} == 'B'
+        div =0.66;
+    else
+        div = 0.72;
+    end
+        givedata(i-1,:) = givedata(i-1,:)/div;
+        orderdata(i-1,:) = orderdata(i-1,:)/div;
+end
 
-%得到加权规范化矩阵
-score = weight * matrix';
+%求取每一周订货量和供货量的总和
+orderhe = sum(orderdata);
+givehe = sum(givedata);
 
-%计算综合得分并输出前50名
-[sortedScore, I] = sort(score);
-top50 = flipud(I');
-top50 = top50(1:50);
-xlswrite('AHP结果.xlsx',[top50, zhi(top50,:),score(top50)']);
+top50 = xlsread("结果排名");
+kucun = 2*2.82e4;       
+
+%按照贪心算法 -- 应当选取最重要的前n个厂家，初始化 n=10，库存量为2倍产能
+book=zeros(1,50);
+n=10
+ns = [""]
+while book(n)==0
+    if n==49
+        disp("overflow");
+        break;
+    end
+
+    %将1-n个商家的编号载入topn-id中，并且初始化库存，且令满足生产需求的每周消耗量为每周订货总量平均值
+    topn_id = top50(1:n,1);
+    kucun = 2*2.82e4;
+    success =1;
+    x=[];
+    y=[];
+    sss=0
+    produce = 24189.2625;
+
+    %模拟1-240周会不会缺货(库存小于0)，如果会缺货，book(n)=-1，本轮测试结束,n = n+1,继续测试,如果成功book(n)=1,n=n-1）
+    for week =1:240
+        x = [x week];
+        y = [y kucun];
+        
+        cangive = sum(givedata(topn_id,week))
+        kucun = kucun +cangive -produce;
+        if(kucun<0)
+            success=0;
+            disp("fail "+n+"in week:"+week);
+            break;     
+        end
+    end
+
+    %此处通过book标记测试状态 0-未测试 1 成功 -1失败
+    if success ==0
+        book(n) = -1;
+        n = n+1;
+    else
+        book(n) = 1;
+        n=n-1;
+    end
+    disp(n);
+end
+plot(x,y);
+legend("以订货量均值作为保障生产需求时的库存变动量");
+xlabel("周数/周");
+ylabel("库存量/立方米");
 \end{lstlisting}
+\subsection{方法二：0——1规划--matlab程序}
+\begin{lstlisting}[language=matlab]
+filename = '结果排名.xls';
+filename2 = '转化产能表.xlsx';
 
+%读取前五十重要供货商的数据以及转化为产品数量之后的数据
+ranki = xlsread(filename);
+origin = xlsread(filename2);
 
+%top50 = origin(ranki(:,1),:)';
+top50 = origin';
+c = ones(1,402);
 
+b = 22.32e3 * ones(240,1);
+for i = 2:240
+  top50(i,:) = top50(i,:) + top50(i-1,:);
+  b(i)=b(i)*i;
+end
+
+top50 = -top50;
+b = -b;
+intcon = 1:402;
+lb=zeros(402,1);
+ub=ones(402,1);
+
+[x,fm] = intlinprog(c,intcon,top50,b,[],[],lb,ub)
+    
+    
+    
+\end{lstlisting}
+   
 \end{appendices}
 \end{document}
