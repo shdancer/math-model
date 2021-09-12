@@ -845,8 +845,8 @@ $MOEA/D$算法于2007年由张清富等人提出\cite{zhangqingfu}，其特点�
                 \end{tabular}}
         \end{center}
     \end{table}
-    \section{问题一：熵权法为各项指标赋权--matlab程序}
-    \subsection{将生产三种原料企业的产能转化为同类型}
+    \section{问题一：找到50家最重要供应商}
+    \subsection{将生产三种原料企业的产能转化为同类型--matlab程序}
     \begin{lstlisting}[language=matlab]
 filename = '附件1 近5年402家供应商的相关数据.xlsx';
 providesheet = '供应商的供货量（m³）';
@@ -869,7 +869,7 @@ end
 
 xlswrite('转化产能表.xlsx',power);
 \end{lstlisting}
-    \subsection{使用熵权法为指标客观赋权}
+    \subsection{使用熵权法为指标客观赋权--matlab程序}
     \begin{lstlisting}[language=matlab]
 filename = '转化产能表.xlsx';
 ordersheet = '企业的订货量（m³）';
@@ -1095,7 +1095,7 @@ legend("以订货量均值作为保障生产需求时的库存变动量");
 xlabel("周数/周");
 ylabel("库存量/立方米");
 \end{lstlisting}
-    \subsection*{方法二：0——1规划--matlab程序}
+    \subsection*{方法二：0-1规划--matlab程序}
     \begin{lstlisting}[language=matlab]
 filename = '结果排名.xls';
 filename2 = '转化产能表.xlsx';
