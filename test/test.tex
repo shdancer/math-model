@@ -1,4 +1,4 @@
-\documentclass{cumcmthesis}
+\documentclass[withoutpreface,bwprint]{cumcmthesis}
 \usepackage[framemethod=TikZ]{mdframed}
 \usepackage{url}   % 网页链接
 \usepackage{subcaption} % 子标题
@@ -6,6 +6,7 @@
 \usepackage{longtable}
 \usepackage{graphicx}
 \usepackage{bm}
+\usepackage{float}
 \title{生产企业原料的订购与运输问题}\tihao{A}
 \baominghao{4321}
 \schoolname{你的大学}
@@ -37,11 +38,13 @@
 
 
     问题三：我们将\textbf{基于分解的$MOEA\backslash D$\cite{RN13}法}应用于本题的两目标优化问题，对其的求解我们使用\textbf{切比雪夫法}建立可计算的优化公式。然后结合\textbf{遗传算法}，通过遗传生成可决策域，并 使其全部遍历$MOEA\backslash D$优化后比对
-    筛选出最佳权衡点，即最符合优化目标的订购方案与转运方案。得出:订购方案中原料$A$、$C$的比值为，转运方案的总损耗量为。
+    筛选出最佳权衡点，即最符合优化目标的订购方案与转运方案。得出:订购方案中原料$A$、$C$的比值为，转运方案的总损耗量为$2.0208 \times 10^ 3$立方米。
 
 
-    问题四
-    \keywords{评价类模型\quad 优化问题\quad  动态规划}
+    问题四：我们分析认为，最大限度提高企业产能的方式是建立供应商、企业与转运商三方信息共享机制，使得物流的运输能力
+    最大限度被调用。因此，这里同样使用问题二建立的“贪婪+动态规划”评价机制，添加所有供应商以求得最大化运输能力的运输方案，
+    并由此反推出使供货量最大的订货方案。根据结果其产能可以提升至$3.1 \times 10^ 4$万立方米，总产能提升1.09倍。
+    \keywords{评价类模型\quad 优化问题\quad  近似动态规划\quad $MOEA\backslash D$法}
 \end{abstract}
 
 \section{问题重述}
@@ -89,7 +92,7 @@
 \section{模型的假设}
 1 . 假设题中402家供货商供货供货品质均无差别且满足该企业要求。
 
-2 . 假设不考虑货物交接流程、商家信用度、配合度、服务水平态度等细节问题
+2 . 假设不考虑货物交接流程、商家信用度、配合度、服务水平态度等细节问题.
 
 3 . 假设题目时间范围内该企业、供应商与转运商的生产能力都相对稳定，不发生重大变化。
 
@@ -114,6 +117,7 @@
         $V_t(S_t(I))$                          & 在第t周处于$S_t(I)$的总最小消耗            \\
         $C(V_t,x)$                             & 第t周在决策$x$下的该周消耗量               \\
         $T$                                    & 运输商的运输量                             \\
+       $ g^{t\varepsilon}$                     & 切比雪夫法中的适应度函数\\
         \hline
     \end{tabular}
 \end{center}
@@ -558,8 +562,8 @@ TOPSIS法(又称为”优劣解距离法“）是根据有限个评价对象与�
 近似动态规划的特殊处理。
 \begin{description}
     \item[$\blacktriangleright$] \textbf{预测供货量} \\
-        制定采购方案即在选择出的31家所需最少供应商其中制定方案。选择供货商最的判断依据就要对每个周的供货量进行量化。
-        过往数据表明，在同一时间，不同供货商供货量各不相同。因此，未来24周的供货量率不能明确确定，需要做出预测。我们对过往的240组数据均分为24组，用每组供货量的平均水平模拟各供货商未来24周每周平均的供货量。
+        制定采购方案即在选择出的31家供应商中制定方案。选择最少供货商的判断依据就要对每个周的供货量进行量化。
+        过往数据表明，在同一时间段，不同供货商供货量各不相同。因此，未来24周的供货量不能明确确定，需要做出预测。我们对过往的240组数据均分为24组，用每组供货量的平均水平模拟各供货商未来24周每周的供货量。
     \item[$\blacktriangleright$] \textbf{价格函数} \\
         由于购买材料时，基本不受外界因素影响，只与材料种类有关，所以$C(V_t,\bm{x})$
         可以简化为$C(\bm{x})$:
@@ -691,6 +695,7 @@ $MOEA/D$算法于2007年由张清富等人提出，其特点是能够将多目�
 重复此步骤直至筛选出最优方案。
 
 \subsubsection{问题三模型的求解}
+问题三使用MATLAB编程求解，程序算法设计如下
 \begin{figure}[H]
     \centering
     \includegraphics[scale = 0.5]{three.png}
@@ -698,11 +703,9 @@ $MOEA/D$算法于2007年由张清富等人提出，其特点是能够将多目�
     \caption{$MOEA/D$与遗传算法结合程序设计图} \label{fig:6}
 \end{figure}
 %%%%%%%%%%%程序步骤加框图
-\begin{description}
-
-    \item[$\bigstar$] \textbf{问题三求解结果}
-\end{description}
 \subsection{问题四模型的建立与求解}
+由于问题四所要做的工作再前三问以基本完成，所以第四问的求解比较容易，
+本文不在这里花太多笔墨赘述。
 \subsubsection{问题四模型的建立}
 由于在之前的问题中物流的运货能力由于受到供应方的限制
 并未能够被最大程度利用，在供应链管理中，供应方，运输方
@@ -747,10 +750,43 @@ $MOEA/D$算法于2007年由张清富等人提出，其特点是能够将多目�
 其中竖直方向的坐标轴表示企业供货能力大小，水平方向两条轴表示供货精确度。可以发现，位列50家重要供应商名单中的企业几乎全部被聚类算法划分到了“具有较强供货能力”一类，
 而根据本道题其他问的分析与熵权法客观赋权得到的结果都可以说明供货能力是评价供应商对企业重要程度的最主要因素，名单企业几乎均位列此类，充分说明了问题一求解结果的合理性。
 \subsection{问题二结果的分析与检验}
-以过去5年订货量的平均值作为满足生产需要的最低指标
-对问题二使用贪心算法进行求解，得到至少'结果排序'中的前31家企业进行供货能够满足生产需求，但是贪心算法具有短视性，同时按照4项指标进行排序的供货商不一定是该问题的最优解，故使用动态规划进行求解，同时使用近似动态规划解决维度灾问题
+我们以过去5年订货量的平均值作为满足生产需要的最低指标求解，得到当至少"结果排序"中的前31家企业进行供货时能够满足生产需求。此时最经济订购方案的总花费收敛在59万元附近，而最佳转运方案的损耗量为31.2881立方米。但是贪心算法具有短视性，同时按照4项指标进行排序的供货商不一定是该问题的最优解，故使用动态规划进行求解。\\
+
+同时使用近似动态规划解决维度灾问题
 由于该算法需要 '开发' 和 '探索' 故得到的结果具有不稳定性，我们取多次求得的均值填入附录A中.
 \subsection{问题三结果的分析与检验}
+我们将结果对于两个优化目标分别进行分析
+\begin{description}
+    \item[$\blacktriangleright$] \textbf{订购方案分析}
+\end{description} 
+由于本题优化目标增加了尽可能多的订购Ae=而尽可能少的定购C,为了检验这一目标实现效果，我们
+将此题采购方案中三种材料的比例与上一问没给出材料偏好要求的比例进行对比
+\begin{figure}[H]
+    \centering
+    \begin{minipage}[c]{0.4\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{before_edit.png}
+        \subcaption{不要求采购顺序的采购方案}
+        \label{fig:sample-figure-a}
+    \end{minipage}
+    \begin{minipage}[c]{0.4\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{after_edit.png}
+        \subcaption{要求采购顺序的采购方案}
+        \label{fig:sample-figure-b}
+    \end{minipage}
+    \caption{三种原料采购比示意图}
+    \label{fig:sample-figure}
+\end{figure}
+可以发现经过我们的模型优化之和，最佳订购方案中A材料比例明显增加，C材料比例明显减少，说明
+结果较好满足了优化目标的预期。
+
+\begin{description}
+ 
+\item[$\blacktriangleright$] \textbf{转运方案分析}\\
+ 同样与第二问数据对比，此题转运方案损耗量($2.0208 \times 10^ 3$)与第二问转运方案损耗量($31.2881$)具有较大差异，经过我们的分析
+ 我们认为造成这种结果的原因是在本题的0-1背包动态规划算法中没有上一问的供货量限制，导致其供货量向最优解不断偏移，使前后数据出现了差异。
+\end{description}
 \subsection{问题四结果的分析与检验}
 经过对结果进行验证，新方案每周的实际接受量均值相较于原
 本的平均供货量提升了$1.68$倍，相较于原来$2.82 \times 10^4$的产能
@@ -762,8 +798,10 @@ $MOEA/D$算法于2007年由张清富等人提出，其特点是能够将多目�
 \begin{description}
     \item[$\blacktriangleright$] 第二问中贪心法的使用虽然可以较容易的对平均供货量做出衡量，但是实际考虑制定满足企业生产的方案时不只有平均供货量这一个评判指标，故单纯考虑贪心法具有一定局限性，还需要综合考虑其他计算方法。
     \item[$\blacktriangleright$] 第二问近似动态规划虽然可以避免维度灾，但是由于存在开发和探索两个选项，因此结果存在随机性，并且满足生产需要的阈值由人为评定，具有较大的主观因素 ，运行多次发现结果稳定性并不理想。
-下图为三次运行的对应cost结果  
 
+\end{description}
+\begin{description}
+    \item[$\blacktriangleright$] 对于我们设计的贪心法与0-1背包(动态规划)法结合的算法，应用于题设不同环境时都可以给出相对合理的方案，但对于这些方案数据进行纵向对比时偶有出现较大差异（如二、三问的运输损耗量），故其还有一定改进空间，以进一步增加结果的一致性。
 \end{description}
 
 %参考文献
@@ -795,7 +833,7 @@ $MOEA/D$算法于2007年由张清富等人提出，其特点是能够将多目�
                 \end{tabular}}
         \end{center}
     \end{table}
-    \section{熵权法--matlab程序}
+    \section{问题一：熵权法为各项指标赋权--matlab程序}
     \subsection{将生产三种原料企业的产能转化为同类型}
     \begin{lstlisting}[language=matlab]
 filename = '附件1 近5年402家供应商的相关数据.xlsx';
@@ -888,7 +926,8 @@ function ret = handleZero(array)
   ret = array;
 end
  \end{lstlisting}
-    \section{TOPSIS法--matlab程序}
+    \section{问题一：基于两种评价模型确定重要供应商}
+    \subsection*{方法一：TOPSIS法--matlab程序}
     \begin{lstlisting}[language=matlab]
 %W,P 需要导入w(4X1)p(402X4)两个矩阵
 clear;
@@ -947,7 +986,7 @@ paiming =temp(1:50);
 temp = [paiming,index(paiming,:),C(paiming,:)];
 xlswrite("结果排名",temp,"sheet1");
 \end{lstlisting}
-    \section{层次分析法--matlab程序}
+    \subsection*{方法二：层次分析法--matlab程序}
     \begin{lstlisting}[language=matlab]
 %读入数据
 filename = '标准化矩阵和权重.xlsx';
@@ -967,27 +1006,260 @@ top50 = flipud(I');
 top50 = top50(1:50);
 xlswrite('AHP结果.xlsx',[top50, zhi(top50,:),score(top50)']);
 \end{lstlisting}
-    \section{层次分析法--matlab程序}
-    \begin{lstlisting}[language=matlab]
+\section{问题二：求解最少供应商数量}
+\subsection*{方法一：贪心算法--matlab程序}
+\begin{lstlisting}[language=matlab]
+clear;
 %读入数据
-filename = '标准化矩阵和权重.xlsx';
-matrixsheet = '归一矩阵';
-weightsheet = '权重';
+[orderdata,ordertext] =xlsread("附件1 近5年402家供应商的相关数据","企业的订货量（m³）");
+givedata = xlsread("附件1 近5年402家供应商的相关数据","供应商的供货量（m³）");
 
-matrix = xlsread(filename,matrixsheet);
-weight = xlsread(filename,weightsheet);
-zhi = xlsread('指标.xlsx');
+%将各原料对应量转化为产品量
+for i = 2:403                           
+    div =0;
+    if ordertext{i,2} =='A'
+        div = 0.6;
+    elseif ordertext{i,2} == 'B'
+        div =0.66;
+    else
+        div = 0.72;
+    end
+        givedata(i-1,:) = givedata(i-1,:)/div;
+        orderdata(i-1,:) = orderdata(i-1,:)/div;
+end
 
-%得到加权规范化矩阵
-score = weight * matrix';
+%求取每一周订货量和供货量的总和
+orderhe = sum(orderdata);
+givehe = sum(givedata);
 
-%计算综合得分并输出前50名
-[sortedScore, I] = sort(score);
-top50 = flipud(I');
-top50 = top50(1:50);
-xlswrite('AHP结果.xlsx',[top50, zhi(top50,:),score(top50)']);
+top50 = xlsread("结果排名");
+kucun = 2*2.82e4;       
+
+%按照贪心算法 -- 应当选取最重要的前n个厂家，初始化 n=10，库存量为2倍产能
+book=zeros(1,50);
+n=10
+ns = [""]
+while book(n)==0
+    if n==49
+        disp("overflow");
+        break;
+    end
+
+    %将1-n个商家的编号载入topn-id中，并且初始化库存，且令满足生产需求的每周消耗量为每周订货总量平均值
+    topn_id = top50(1:n,1);
+    kucun = 2*2.82e4;
+    success =1;
+    x=[];
+    y=[];
+    sss=0
+    produce = 24189.2625;
+
+    %模拟1-240周会不会缺货(库存小于0)，如果会缺货，book(n)=-1，本轮测试结束,n = n+1,继续测试,如果成功book(n)=1,n=n-1）
+    for week =1:240
+        x = [x week];
+        y = [y kucun];
+        
+        cangive = sum(givedata(topn_id,week))
+        kucun = kucun +cangive -produce;
+        if(kucun<0)
+            success=0;
+            disp("fail "+n+"in week:"+week);
+            break;     
+        end
+    end
+
+    %此处通过book标记测试状态 0-未测试 1 成功 -1失败
+    if success ==0
+        book(n) = -1;
+        n = n+1;
+    else
+        book(n) = 1;
+        n=n-1;
+    end
+    disp(n);
+end
+plot(x,y);
+legend("以订货量均值作为保障生产需求时的库存变动量");
+xlabel("周数/周");
+ylabel("库存量/立方米");
 \end{lstlisting}
+\subsection*{方法二：0——1规划--matlab程序}
+\begin{lstlisting}[language=matlab]
+filename = '结果排名.xls';
+filename2 = '转化产能表.xlsx';
 
+%读取前五十重要供货商的数据以及转化为产品数量之后的数据
+ranki = xlsread(filename);
+origin = xlsread(filename2);
+
+%top50 = origin(ranki(:,1),:)';
+top50 = origin';
+%c是适配决策向量x每一个分量的系数，此处为1
+c = ones(1,402);
+b = 22.32e3 * ones(240,1);
+%对于第i周而言约束条件是 之前的余裕原料和本周的购入量要大于等于每一周的消耗量
+for i = 2:240
+  top50(i,:) = top50(i,:) + top50(i-1,:);
+  b(i)=b(i)*i;
+end
+
+top50 = -top50;
+b = -b;
+intcon = 1:402;
+lb=zeros(402,1);
+ub=ones(402,1);
+
+[x,fm] = intlinprog(c,intcon,top50,b,[],[],lb,ub)
+\end{lstlisting}
+\section{问题二：确定最佳订货方案}
+\subsection*{近似动态规划算法--matlab程序}
+\begin{lstlisting}[language=matlab]
+clear;
+filename = '附件1 近5年402家供应商的相关数据.xlsx';
+filename2 = '结果排名.xls';
+providesheet = '供应商的供货量（m³）';
+odersheet = '企业的订货量（m³）';
+
+%读入订货数据和供货数据，提取出每一个供货商的供货类型text
+[power, text] = xlsread(filename,providesheet);
+order = xlsread(filename, odersheet);
+text = text(2:403,2);
+ranki = xlsread(filename2);
+top50 = ranki(:,1);
+power = power(top50,:);
+order = order(top50,:);
+text = text(top50);
+global text
+
+%利用text将商家的供货量转换成相应的产品量
+for i = 1:50
+    divnum = 0;
+    if char(text(i)) == 'A'
+        divnum = 0.6;
+    elseif char(text(i)) == 'B'
+        divnum = 0.66;
+    else
+        divnum =0.72;
+    end
+    power(i,:) = power(i,:)./divnum;
+end
+
+global spacePower spaceOrder
+spacePower = [];
+spaceOrder = [];
+% 将240周分为10期 求出每一期的期望值
+
+for i = 1:24
+  spacePower = [spacePower, sum(power(:,(i-1)*10+1:i*10),2)/10];
+  spaceOrder = [spaceOrder, sum(order(:,(i-1)*10+1:i*10),2)/10];
+end
+spaceOrder = sum(spaceOrder,1);
+
+%创建状态函数映射Map，储存状态
+global Vt 
+Vt = containers.Map('1', containers.Map('0',containers.Map('0',0)));
+for i = 1:10
+    Vt(num2str(i)) = containers.Map('KeyType','char','ValueType','any');
+    Vtt = Vt(num2str(i));
+    for j = 1:24
+       Vtt(num2str(j)) = containers.Map;
+    end
+end
+
+global rest path
+rest = containers.Map;
+path = containers.Map;
+
+%递归调用V函数
+final = V(10,24,520000)
+
+%打印路径
+for i = path.values
+    i
+end
+
+%定义记忆化搜索动态规划递归函数
+function v = V(n, t, I)
+  global Vt spacePower text rest path spaceOrder;
+ 
+  Vn = Vt(num2str(n));
+  Vtt = Vn(num2str(t));
+  
+  %边界返回条件，判断是有临近状态
+  closestKeys = -1;
+  if Vtt.Count ~= 0
+      for keys = str2double(string(Vtt.keys()))
+        if closestKeys == -1
+            closestKeys = keys;
+            continue;
+        end
+        if abs(closestKeys - I) > abs(keys - I)
+            closestKeys = keys;
+        end
+      end
+      if abs(closestKeys - I) <= 1e3
+          v = Vtt(num2str(closestKeys));
+          return;
+      end
+  end
+
+  %每一层动态规划的边界条件
+  if t ~= 1
+    plan = round(rand(10,50));
+    T = -1;
+    minNum = 1e10;
+
+    %开发-探索，随机生成10个决策开发
+    for plans = 1:10
+      %in = plan(plans,:) * spacePower(:,t)
+      %out = spaceOrder(t)
+      T = I - plan(plans,:) * spacePower(:,t) + 2.82e2;
+      %if T < 0
+      %  continue;
+      %end
+      
+      %进行决策
+      cost = 0;
+      for i = 1:50
+        price = 0;
+        if char(text(i)) == 'A'
+              price = 0.6*1.2;
+        elseif char(text(i)) == 'B'
+              price = 0.66*1.1;
+        else
+              price = 0.72;
+        end
+        cost = cost + price * plan(plans,i) * spacePower(i,t);
+      end
+
+      %第一层的边界条件
+      if n == 1
+        minNum = min([minNum, V(n, t-1, T) + cost ]);
+      else
+          if minNum >  0.7 * (V(n, t-1, T) + cost ) + 0.3 * (V(n-1, t-1, T) + cost ) 
+              minNum =  0.7 * (V(n, t-1, T) + cost ) + 0.3 * (V(n-1, t-1, T) + cost ) ;
+              if n == 5
+                rest(num2str(t -1)) = I;
+                path(num2str(t -1)) = plan(plans,:);
+              end
+          end
+      end
+    end
+
+    %记忆化状态
+    Vtt(num2str(I)) = minNum;
+    v = minNum;
+    return;
+  else
+
+    %记忆化状态
+    Vtt(num2str(I)) = 1e10;
+    v = 1e10;
+    return;
+  end
+end
+
+\end{lstlisting}  
 
 
 \end{appendices}
