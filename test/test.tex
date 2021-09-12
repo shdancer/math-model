@@ -1,4 +1,4 @@
-\documentclass{cumcmthesis}
+\documentclass[withoutpreface,bwprint]{cumcmthesis}
 \usepackage[framemethod=TikZ]{mdframed}
 \usepackage{url}   % 网页链接
 \usepackage{subcaption} % 子标题
@@ -6,6 +6,7 @@
 \usepackage{longtable}
 \usepackage{graphicx}
 \usepackage{bm}
+\usepackage{float}
 \title{生产企业原料的订购与运输问题}\tihao{A}
 \baominghao{4321}
 \schoolname{你的大学}
@@ -37,13 +38,13 @@
 
 
     问题三：我们将\textbf{基于分解的$MOEA\backslash D$\cite{RN13}法}应用于本题的两目标优化问题，对其的求解我们使用\textbf{切比雪夫法}建立可计算的优化公式。然后结合\textbf{遗传算法}，通过遗传生成可决策域，并 使其全部遍历$MOEA\backslash D$优化后比对
-    筛选出最佳权衡点，即最符合优化目标的订购方案与转运方案。得出:订购方案中原料$A$、$C$的比值为，转运方案的总损耗量为。
+    筛选出最佳权衡点，即最符合优化目标的订购方案与转运方案。得出:订购方案中原料$A$、$C$的比值为，转运方案的总损耗量为$2.0208 \times 10^ 3$立方米。
 
 
     问题四：我们分析认为，最大限度提高企业产能的方式是建立供应商、企业与转运商三方信息共享机制，使得物流的运输能力
     最大限度被调用。因此，这里同样使用问题二建立的“贪婪+动态规划”评价机制，添加所有供应商以求得最大化运输能力的运输方案，
-    并由此反推出使供货量最大的订货方案。根据结果其产能可以提升至$3.1 \times 10^ 4$万立方米/，总产能提升1.09倍。
-    \keywords{评价类模型\quad 优化问题\quad  动态规划}
+    并由此反推出使供货量最大的订货方案。根据结果其产能可以提升至$3.1 \times 10^ 4$万立方米，总产能提升1.09倍。
+    \keywords{评价类模型\quad 优化问题\quad  近似动态规划\quad $MOEA\backslash D$法}
 \end{abstract}
 
 \section{问题重述}
@@ -700,9 +701,6 @@ $MOEA/D$算法于2007年由张清富等人提出，其特点是能够将多目�
     \caption{$MOEA/D$与遗传算法结合程序设计图} \label{fig:6}
 \end{figure}
 %%%%%%%%%%%程序步骤加框图
-\begin{description}
-    \item[$\bigstar$] \textbf{问题三求解结果}
-\end{description}
 \subsection{问题四模型的建立与求解}
 由于问题四所要做的工作再前三问以基本完成，所以第四问的求解比较容易，
 本文不在这里花太多笔墨赘述。
@@ -751,6 +749,38 @@ $MOEA/D$算法于2007年由张清富等人提出，其特点是能够将多目�
 而根据本道题其他问的分析与熵权法客观赋权得到的结果都可以说明供货能力是评价供应商对企业重要程度的最主要因素，名单企业几乎均位列此类，充分说明了问题一求解结果的合理性。
 \subsection{问题二结果的分析与检验}
 \subsection{问题三结果的分析与检验}
+我们将结果对于两个优化目标分别进行分析
+\begin{description}
+    \item[$\blacktriangleright$] \textbf{订购方案分析}
+\end{description} 
+由于本题优化目标增加了尽可能多的订购Ae=而尽可能少的定购C,为了检验这一目标实现效果，我们
+将此题采购方案中三种材料的比例与上一问没给出材料偏好要求的比例进行对比
+\begin{figure}[H]
+    \centering
+    \begin{minipage}[c]{0.4\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{before_edit.png}
+        \subcaption{不要求采购顺序的采购方案}
+        \label{fig:sample-figure-a}
+    \end{minipage}
+    \begin{minipage}[c]{0.4\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{after_edit.png}
+        \subcaption{要求采购顺序的采购方案}
+        \label{fig:sample-figure-b}
+    \end{minipage}
+    \caption{三种原料采购比示意图}
+    \label{fig:sample-figure}
+\end{figure}
+可以发现经过我们的模型优化之和，最佳订购方案中A材料比例明显增加，C材料比例明显减少，说明
+结果较好满足了优化目标的预期。
+
+\begin{description}
+ 
+\item[$\blacktriangleright$] \textbf{转运方案分析}\\
+ 同样与第二问数据对比，此题转运方案损耗量($2.0208 \times 10^ 3$)与第二问转运方案损耗量($31.2881$)具有较大差异，经过我们的分析
+ 我们认为造成这种结果的原因是在本题的0-1背包动态规划算法中没有上一问的供货量限制，导致其供货量向最优解不断偏移，使前后数据出现了差异。
+\end{description}
 \subsection{问题四结果的分析与检验}
 经过对结果进行验证，新方案每周的实际接受量均值相较于原
 本的平均供货量提升了$1.68$倍，相较于原来$2.82 \times 10^4$的产能
@@ -761,6 +791,9 @@ $MOEA/D$算法于2007年由张清富等人提出，其特点是能够将多目�
 \section{模型的评价、改进与推广}
 \begin{description}
     \item[$\blacktriangleright$] 第二问中贪心法的使用虽然可以较容易的对平均供货量做出衡量，但是实际考虑制定满足企业生产的方案时不只有平均供货量这一个评判指标，故单纯考虑贪心法具有一定局限性，还需要综合考虑其他计算方法。
+\end{description}
+\begin{description}
+    \item[$\blacktriangleright$] 对于我们设计的贪心法与0-1背包(动态规划)法结合的算法，应用于题设不同环境时都可以给出相对合理的方案，但对于这些方案数据进行纵向对比时偶有出现较大差异（如二、三问的运输损耗量），故其还有一定改进空间，以进一步增加结果的一致性。
 \end{description}
 
 %参考文献
