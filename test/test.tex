@@ -926,7 +926,8 @@ function ret = handleZero(array)
   ret = array;
 end
  \end{lstlisting}
-    \section{问题一：TOPSIS法--matlab程序}
+    \section{问题一：基于两种评价模型确定重要供应商}
+    \subsection*{方法一：TOPSIS法--matlab程序}
     \begin{lstlisting}[language=matlab]
 %W,P 需要导入w(4X1)p(402X4)两个矩阵
 clear;
@@ -985,7 +986,7 @@ paiming =temp(1:50);
 temp = [paiming,index(paiming,:),C(paiming,:)];
 xlswrite("结果排名",temp,"sheet1");
 \end{lstlisting}
-    \section{问题一：层次分析法--matlab程序}
+    \subsection*{方法二：层次分析法--matlab程序}
     \begin{lstlisting}[language=matlab]
 %读入数据
 filename = '标准化矩阵和权重.xlsx';
@@ -1006,7 +1007,7 @@ top50 = top50(1:50);
 xlswrite('AHP结果.xlsx',[top50, zhi(top50,:),score(top50)']);
 \end{lstlisting}
 \section{问题二：求解最少供应商数量}
-\subsection{方法一：贪心算法--matlab程序}
+\subsection*{方法一：贪心算法--matlab程序}
 \begin{lstlisting}[language=matlab]
 clear;
 %读入数据
@@ -1082,7 +1083,7 @@ legend("以订货量均值作为保障生产需求时的库存变动量");
 xlabel("周数/周");
 ylabel("库存量/立方米");
 \end{lstlisting}
-\subsection{方法二：0——1规划--matlab程序}
+\subsection*{方法二：0——1规划--matlab程序}
 \begin{lstlisting}[language=matlab]
 filename = '结果排名.xls';
 filename2 = '转化产能表.xlsx';
@@ -1093,9 +1094,10 @@ origin = xlsread(filename2);
 
 %top50 = origin(ranki(:,1),:)';
 top50 = origin';
+%c是适配决策向量x每一个分量的系数，此处为1
 c = ones(1,402);
-
 b = 22.32e3 * ones(240,1);
+%对于第i周而言约束条件是 之前的余裕原料和本周的购入量要大于等于每一周的消耗量
 for i = 2:240
   top50(i,:) = top50(i,:) + top50(i-1,:);
   b(i)=b(i)*i;
@@ -1108,10 +1110,157 @@ lb=zeros(402,1);
 ub=ones(402,1);
 
 [x,fm] = intlinprog(c,intcon,top50,b,[],[],lb,ub)
-    
-    
-    
 \end{lstlisting}
-   
+\section{问题二：确定最佳订货方案}
+\subsection*{近似动态规划算法--matlab程序}
+\begin{lstlisting}[language=matlab]
+clear;
+filename = '附件1 近5年402家供应商的相关数据.xlsx';
+filename2 = '结果排名.xls';
+providesheet = '供应商的供货量（m³）';
+odersheet = '企业的订货量（m³）';
+
+%读入订货数据和供货数据，提取出每一个供货商的供货类型text
+[power, text] = xlsread(filename,providesheet);
+order = xlsread(filename, odersheet);
+text = text(2:403,2);
+ranki = xlsread(filename2);
+top50 = ranki(:,1);
+power = power(top50,:);
+order = order(top50,:);
+text = text(top50);
+global text
+
+%利用text将商家的供货量转换成相应的产品量
+for i = 1:50
+    divnum = 0;
+    if char(text(i)) == 'A'
+        divnum = 0.6;
+    elseif char(text(i)) == 'B'
+        divnum = 0.66;
+    else
+        divnum =0.72;
+    end
+    power(i,:) = power(i,:)./divnum;
+end
+
+global spacePower spaceOrder
+spacePower = [];
+spaceOrder = [];
+% 将240周分为10期 求出每一期的期望值
+
+for i = 1:24
+  spacePower = [spacePower, sum(power(:,(i-1)*10+1:i*10),2)/10];
+  spaceOrder = [spaceOrder, sum(order(:,(i-1)*10+1:i*10),2)/10];
+end
+spaceOrder = sum(spaceOrder,1);
+
+%创建状态函数映射Map，储存状态
+global Vt 
+Vt = containers.Map('1', containers.Map('0',containers.Map('0',0)));
+for i = 1:10
+    Vt(num2str(i)) = containers.Map('KeyType','char','ValueType','any');
+    Vtt = Vt(num2str(i));
+    for j = 1:24
+       Vtt(num2str(j)) = containers.Map;
+    end
+end
+
+global rest path
+rest = containers.Map;
+path = containers.Map;
+
+%递归调用V函数
+final = V(10,24,520000)
+
+%打印路径
+for i = path.values
+    i
+end
+
+%定义记忆化搜索动态规划递归函数
+function v = V(n, t, I)
+  global Vt spacePower text rest path spaceOrder;
+ 
+  Vn = Vt(num2str(n));
+  Vtt = Vn(num2str(t));
+  
+  %边界返回条件，判断是有临近状态
+  closestKeys = -1;
+  if Vtt.Count ~= 0
+      for keys = str2double(string(Vtt.keys()))
+        if closestKeys == -1
+            closestKeys = keys;
+            continue;
+        end
+        if abs(closestKeys - I) > abs(keys - I)
+            closestKeys = keys;
+        end
+      end
+      if abs(closestKeys - I) <= 1e3
+          v = Vtt(num2str(closestKeys));
+          return;
+      end
+  end
+
+  %每一层动态规划的边界条件
+  if t ~= 1
+    plan = round(rand(10,50));
+    T = -1;
+    minNum = 1e10;
+
+    %开发-探索，随机生成10个决策开发
+    for plans = 1:10
+      %in = plan(plans,:) * spacePower(:,t)
+      %out = spaceOrder(t)
+      T = I - plan(plans,:) * spacePower(:,t) + 2.82e2;
+      %if T < 0
+      %  continue;
+      %end
+      
+      %进行决策
+      cost = 0;
+      for i = 1:50
+        price = 0;
+        if char(text(i)) == 'A'
+              price = 0.6*1.2;
+        elseif char(text(i)) == 'B'
+              price = 0.66*1.1;
+        else
+              price = 0.72;
+        end
+        cost = cost + price * plan(plans,i) * spacePower(i,t);
+      end
+
+      %第一层的边界条件
+      if n == 1
+        minNum = min([minNum, V(n, t-1, T) + cost ]);
+      else
+          if minNum >  0.7 * (V(n, t-1, T) + cost ) + 0.3 * (V(n-1, t-1, T) + cost ) 
+              minNum =  0.7 * (V(n, t-1, T) + cost ) + 0.3 * (V(n-1, t-1, T) + cost ) ;
+              if n == 5
+                rest(num2str(t -1)) = I;
+                path(num2str(t -1)) = plan(plans,:);
+              end
+          end
+      end
+    end
+
+    %记忆化状态
+    Vtt(num2str(I)) = minNum;
+    v = minNum;
+    return;
+  else
+
+    %记忆化状态
+    Vtt(num2str(I)) = 1e10;
+    v = 1e10;
+    return;
+  end
+end
+
+\end{lstlisting}  
+
+
 \end{appendices}
 \end{document}
