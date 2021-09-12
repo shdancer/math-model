@@ -1363,7 +1363,8 @@ end
 
 \section{问题三：画出饼状图}
 \begin{lstlisting}[language = matlab]
-%读入top50
+
+%读入top50,并录入其原材料类型
 function [] =drawPie(form) 
 type =[
 
@@ -1421,6 +1422,7 @@ type =[
 ];
 ABCRatio = [0 0 0] ;
 for i = 1:50
+    %计算每一原材料总量并计算比值
     divnum = 0;
     if type(i) == 'A'
         divnum = 1;
