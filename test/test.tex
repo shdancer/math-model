@@ -1361,6 +1361,83 @@ function index = search(i,j,weight,ischosen)
 end
 \end{lstlisting}
 
+\section{问题三：画出饼状图}
+\begin{lstlisting}[language = matlab]
+%读入top50
+function [] =drawPie(form) 
+type =[
+
+
+    'B'
+    'A'
+    'C'
+    'A'
+    'A'
+    'C'
+    'C'
+    'B'
+    'B'
+    'B'
+    'C'
+    'B'
+    'A'
+    'B'
+    'A'
+    'A'
+    'A'
+    'B'
+    'C'
+    'C'
+    'C'
+    'A'
+    'C'
+    'A'
+    'A'
+    'C'
+    'C'
+    'C'
+    'C'
+    'B'
+    'B'
+    'B'
+    'B'
+    'B'
+    'B'
+    'B'
+    'C'
+    'C'
+    'C'
+    'C'
+    'C'
+    'C'
+    'C'
+    'C'
+    'A'
+    'A'
+    'A'
+    'A'
+    'A'
+    'A'
+];
+ABCRatio = [0 0 0] ;
+for i = 1:50
+    divnum = 0;
+    if type(i) == 'A'
+        divnum = 1;
+    elseif type(i) == 'B'%ABC 》产品
+        divnum = 2;
+    else
+        divnum =3;
+    end
+    ABCRatio(divnum) = ABCRatio(divnum)+sum(form(i,:));
+end
+for i=1:3
+    Ratio(i) = ABCRatio(i)/sum(ABCRatio);
+end
+    disp(Ratio);
+end
+\end{lstlisting}
+
 \section{问题三：MOEA/D}
 \begin{lstlisting}[language = matlab]
 %读入数据
@@ -1416,13 +1493,10 @@ squeeze(Ps(1,:,:))
 %定义适应度函数
 function fitness = fitness(mat,a,b)
     global z1 z2;
+    %这里调用了getSunhao(附录F的简单修改)和drawPie(附录G的简单修改)
     fitness = a * abs(getSunhao(mat) - z1) + b * abs(drawPie(mat) - z1);
 end    
 \end{lstlisting}
-
-
-
-
 
 \end{appendices}
 \end{document}
