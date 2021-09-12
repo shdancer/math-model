@@ -1261,6 +1261,7 @@ end
 \end{lstlisting}  
 
 \section{问题二：确定损耗量最少的转运方案}
+\subsection*{贪婪法与0-1背包(动态规划)算法结合--matlab程序}
 \begin{lstlisting}[language = matlab]
     %读入数据
 filename = '附件2 近5年8家转运商的相关数据';
@@ -1360,8 +1361,8 @@ function index = search(i,j,weight,ischosen)
     end
 end
 \end{lstlisting}
-
-\section{问题三：画出饼状图}
+\section{问题三：计算双目标优化下的最佳方案}
+\subsection*{计算A和C的比例--matlab程序}
 \begin{lstlisting}[language = matlab]
 %读入top50
 function [] =drawPie(form) 
@@ -1438,7 +1439,7 @@ end
 end
 \end{lstlisting}
 
-\section{问题三：MOEA/D}
+\subsection*{MOEA/D}
 \begin{lstlisting}[language = matlab]
 %读入数据
 filename1 = '使损耗量最小的供货方案';
