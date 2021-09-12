@@ -1441,7 +1441,7 @@ end
 end
 \end{lstlisting}
 
-\subsection*{MOEA/D}
+\subsection*{MOEA/D--matlab程序}
 \begin{lstlisting}[language = matlab]
 %读入数据
 filename1 = '使损耗量最小的供货方案';
@@ -1496,7 +1496,8 @@ squeeze(Ps(1,:,:))
 %定义适应度函数
 function fitness = fitness(mat,a,b)
     global z1 z2;
-    %这里调用了getSunhao(附录F的简单修改)和drawPie(附录G的简单修改)
+    %这里调用了getSunhao(附录F的简单修改，输入订货方案，返回最小损耗)和 
+    %drawPie(附录G的简单修改，输入订货方案，返回A/C比例)
     fitness = a * abs(getSunhao(mat) - z1) + b * abs(drawPie(mat) - z1);
 end    
 \end{lstlisting}
