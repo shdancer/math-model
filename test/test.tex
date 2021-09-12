@@ -767,6 +767,28 @@ $MOEA/D$算法于2007年由张清富等人提出，其特点是能够将多目�
 \newpage
 %附录
 \begin{appendices}
+    \section{支撑材料表}
+    \begin{table}[H]
+        \begin{center}
+            \setlength{\tabcolsep}{0.5mm}{
+                \begin{tabular}{ccc}
+                    \toprule
+                    文件名                                     & 文件类型 & 文件意义                     \\
+                    \midrule
+                    TOPSIS结果排名                             & Excel    & 使用TOPSIS的排名             \\
+                    标准化矩阵和权重                           & Excel    & 如文件名                     \\
+                    层次分析表                                 & Excel    & 层次分析的表指标             \\
+                    第四题\_理想情况供货                       & Excel    & 信息共享下理想的最大供货表   \\
+                    供货商的4项指标评价得分                    & Excel    & 402家供货商4项指标的具体数值 \\
+                    通过熵权法TOPSIS得出的综合得分排序\_前50家 & Excel    & 如文件名                     \\
+                    在前31家供货商中得出的订购方案             & Excel    & 如文件名                     \\
+                    在前50家供货商中得出的订购方案             & Excel    & 如文件名                     \\
+                    指标合并权重                               & Excel    & 指标和权重的AHP表            \\
+                    转化产能表                                 & Excel    & 将原材料转化为生产量表       \\
+                    \bottomrule
+                \end{tabular}}
+        \end{center}
+    \end{table}
     \section{熵权法--matlab程序}
     \subsection{将生产三种原料企业的产能转化为同类型}
     \begin{lstlisting}[language=matlab]
@@ -959,5 +981,8 @@ top50 = flipud(I');
 top50 = top50(1:50);
 xlswrite('AHP结果.xlsx',[top50, zhi(top50,:),score(top50)']);
 \end{lstlisting}
+
+
+
 \end{appendices}
 \end{document}
