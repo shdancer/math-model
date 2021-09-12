@@ -1261,6 +1261,169 @@ end
 
 \end{lstlisting}  
 
+\section{问题二：确定损耗量最少的转运方案}
+\begin{lstlisting}[language = matlab]
+    %读入数据
+filename = '附件2 近5年8家转运商的相关数据';
+filename2 = '附件A_31ver';
+
+load = xlsread(filename2);
+trans = xlsread(filename);
+
+%将240周分为24期，每期10周计算均值代替期望
+spaceTrans = [];
+for i = 1:24
+    spaceTrans = [spaceTrans, sum(trans(:,(i-1)*10+1:i*10),2)/10];
+end
+
+%记录原始数据并对数据取整
+originLoad = load;
+load = ceil(load);
+
+%对24期进行迭代分别进行贪婪，0-1背包动态规划
+result = [];
+amount = 0;
+for i = 1:24
+    %初始化值，并贪心排序
+    transData = zeros(402,8);
+    [~,bagIndex] = sort(spaceTrans(:,i));
+    bagPush = 1;
+    nonzero = find(load(1:402,i)');
+    %重复经行0-1背包动态规划，知道所有运输量都被加入
+    while true
+        [~, t] = size(nonzero);
+        if t == 0
+            break
+        end
+        [res,index] = Dp(load(nonzero,i)',6000);
+        for j = nonzero(index)
+            transData( j ,bagIndex(bagPush) ) = originLoad(j,i);
+            amount = amount + spaceTrans( bagIndex(bagPush), i) * originLoad(j,i) * 0.01;
+        end
+        nonzero(index) = [];
+        bagPush = bagPush + 1;
+    end
+    result = [result, transData];
+end
+amount
+xlswrite('第2题 转运方案',result);
+    
+%定义动态规划函数
+function [maxVolume, index] = Dp(weight, volume)
+    [~, count] = size(weight);
+    dp = zeros(count,volume + 1);
+    ischosen = zeros(count,volume + 1);
+    dp(1,1) = 1;
+    ischosen(1,1) = 1;
+    dp(1,weight(1) + 1) = 1;
+    ischosen(1,weight(1) + 1) =1;
+    for i = 2:count
+        for j = 1:volume + 1
+            dp(i,j) = dp(i-1,j);
+            if j - weight(i)  < 1
+                continue
+            end
+            dp(i,j) = dp(i-1,j) || dp(i-1,j-weight(i));
+            if dp(i-1,j-weight(i)) && weight(i) ~= 0
+                ischosen(i,j) = 1;
+            end
+        end
+    end
+    
+    maxVolume = -1;
+    for i = volume + 1:-1:1
+        if dp(count,i)
+            maxVolume = i-1;
+            break
+        end
+    end
+    
+    
+    index = search(count,maxVolume + 1, weight,ischosen);
+end
+
+%搜索动态规划路径
+function index = search(i,j,weight,ischosen)
+    if i == 1
+        index = [];
+        if ischosen(i,j)
+            index = [index, 1];
+        end
+        return;
+    end
+
+    if ischosen(i,j)
+        ret = search(i-1,j - weight(i),weight,ischosen);
+        index = [ret, i];
+    else
+        ret = search(i-1,j,weight,ischosen);
+        index = ret;
+    end
+end
+\end{lstlisting}
+
+\section{问题三：MOEA/D}
+\begin{lstlisting}[language = matlab]
+%读入数据
+filename1 = '使损耗量最小的供货方案';
+filename2 = 'newtable';
+
+mat1 = xlsread(filename1);
+mat2 = xlsread(filename2);
+
+%得到损耗函数和比例函数的目标值
+z1 = getSunhao(mat1)
+z2 = drawPie(mat2)
+global z1 z2;
+
+%初始化并随机生成权重向量
+lamda = rand(10,1,2);
+Ps = zeros(10,50,24);
+Ps(1,:,:) = mat1; 
+Ps(2,:,:) = mat2;
+
+%分割为轮次
+for i =1:10
+    %由最优个体交叉生成种群
+    for j = 2:10
+        swapIndex = round(rand(1,12)*23)+1;
+        temp = zeros(50,24);
+        temp(:,swapIndex) = Ps(j,:,swapIndex);
+        nozeroIndex = find(sum(temp,1) ~= 0 );
+        temp(:,nozeroIndex) = Ps(j-1,:,nozeroIndex);
+        Ps(j+1,:,:) = temp;
+    end
+
+    %计算每个个体关于权重的适应度均值
+    avgFit = [];
+    for j = 1: 10
+        avg = 0;
+        for k =1:10
+            [i j k]
+            temp = squeeze(Ps(j,:,:));
+            avg = avg + fitness(temp,lamda(k,1,1),lamda(k,1,2));
+        end
+        avg = avg/100;
+        avgFit = [avgFit avg];
+    end
+
+    %对适应度排序
+    [~, index] = sort(avgFit);
+    Ps = Ps(index,:,:);
+end
+%输出最优解
+squeeze(Ps(1,:,:))
+
+%定义适应度函数
+function fitness = fitness(mat,a,b)
+    global z1 z2;
+    fitness = a * abs(getSunhao(mat) - z1) + b * abs(drawPie(mat) - z1);
+end    
+\end{lstlisting}
+
+
+
+
 
 \end{appendices}
 \end{document}
