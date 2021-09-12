@@ -1,9 +1,9 @@
 clear;
 
-filename = 'é™„ä»¶1 è¿‘5å¹´402å®¶ä¾›åº”å•†çš„ç›¸å…³æ•°æ®.xlsx';
-filename2 = 'ç»“æœæ’å.xls';
-providesheet = 'ä¾›åº”å•†çš„ä¾›è´§é‡ï¼ˆmÂ³ï¼‰';
-odersheet = 'ä¼ä¸šçš„è®¢è´§é‡ï¼ˆmÂ³ï¼‰';
+filename = '¸½¼ş1 ½ü5Äê402¼Ò¹©Ó¦ÉÌµÄÏà¹ØÊı¾İ.xlsx';
+filename2 = '½á¹ûÅÅÃû.xls';
+providesheet =2;
+odersheet = 1;
 
 [power, text] = xlsread(filename,providesheet);
 order = xlsread(filename, odersheet);
