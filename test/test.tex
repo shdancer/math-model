@@ -491,7 +491,7 @@ TOPSIS法(又称为”优劣解距离法“）是根据有限个评价对象与�
     \item[$\bigstar$] \textbf{最少数量供货商结果求解}\par
         我们首先尝试了使两种算法满足企业现有产能2.82万立方米/周，发现若供应商供应能力不变的话总供应额上限只能达到2.1万立方米/周左右，小于企业现有生产能力，故我们认为企业应仍保持原来生产水平。
         我们基于企业过往订单的供货量评估了其真实产能，并在此基础上重新进行优化，得到满足企业生产所需最少供应商数量为31家。
-        
+
 
 \end{description}
 \subsubsection{近似动态规划确定未来24周的最佳订货方案}
@@ -655,32 +655,32 @@ $MOEA/D$算法于2007年由张清富等人提出，其特点是能够将多目�
 
 \subsubsection*{使用MOEAD的切比雪夫分解策略}
 \begin{description}
-\item[$\blacktriangleright$] \textbf{切比雪夫法} \\
-对于一般的多目标优化问题,通常表示为
-\begin{equation}
-    \begin{split}
-        maxF(x) = (f_1(x),\dots,f_m(x))^T\nonumber \\
-        subject\ to\ x \in \Omega
-    \end{split}
-\end{equation}
-即在决策空间中$\Omega$找出一点使目标函数集$F(x)$中的各个目标均取最优值。但由于优化目标之间
-往往存在冲突，不存在使其同时取最优值的解，这时需要在各个解之间权衡出相对最符合要求的解集，即$Pareto$
-最优前沿。\\
-我们使用切比雪夫法分解该问题求解$Pareto$最优前沿，根据其公式
-\begin{equation}
-    \begin{split}
-        min\ g^{t\varepsilon}(x|\lambda,z*)=\mathop{max}_{{1\le i \le m}}\{\lambda_i|f_i(x)-z_i*|\} \nonumber\\ 
-        subject\ to\ x\in\Omega
-    \end{split}
-\end{equation}
-    其中参考点$z*=z_1^*\cdots z_m^*$，即$Pareto$最优解集，权重向量为$\lambda$，对于一个分式，决策对象$x$就由这两个量确定。
+    \item[$\blacktriangleright$] \textbf{切比雪夫法} \\
+        对于一般的多目标优化问题,通常表示为
+        \begin{equation}
+            \begin{split}
+                maxF(x) = (f_1(x),\dots,f_m(x))^T\nonumber \\
+                subject\ to\ x \in \Omega
+            \end{split}
+        \end{equation}
+        即在决策空间中$\Omega$找出一点使目标函数集$F(x)$中的各个目标均取最优值。但由于优化目标之间
+        往往存在冲突，不存在使其同时取最优值的解，这时需要在各个解之间权衡出相对最符合要求的解集，即$Pareto$
+        最优前沿。\\
+        我们使用切比雪夫法分解该问题求解$Pareto$最优前沿，根据其公式
+        \begin{equation}
+            \begin{split}
+                min\ g^{t\varepsilon}(x|\lambda,z*)=\mathop{max}_{{1\le i \le m}}\{\lambda_i|f_i(x)-z_i*|\} \nonumber\\
+                subject\ to\ x\in\Omega
+            \end{split}
+        \end{equation}
+        其中参考点$z*=z_1^*\cdots z_m^*$，即$Pareto$最优解集，权重向量为$\lambda$，对于一个分式，决策对象$x$就由这两个量确定。
     \item[$\blacktriangleright$] \textbf{确定参考点} \\
-    求解切比雪夫法需要先确定参考点，即分别符合两种优化目标的点。也就是寻找符合题意的运输方案的最优解与订货方案的最优解。
-     \begin{itemize}
-        \item \textbf{由运输方案最优解得到选购方案$z_1$:}我们沿用了问题2中的近似动态规划法，通过调整A、C两材料的价格权重来获得尽量多采购A而少采购C的选购方案。
-        
-        \item \textbf{由订货方案最优解反求选购方案$z_2$:}利用我们提出的贪婪法与0-1背包（动态规划）结合的算法得出最少损耗量对应的转运方案，并以此反求其对应的选购方案。
-    \end{itemize}
+        求解切比雪夫法需要先确定参考点，即分别符合两种优化目标的点。也就是寻找符合题意的运输方案的最优解与订货方案的最优解。
+        \begin{itemize}
+            \item \textbf{由运输方案最优解得到选购方案$z_1$:}我们沿用了问题2中的近似动态规划法，通过调整A、C两材料的价格权重来获得尽量多采购A而少采购C的选购方案。
+
+            \item \textbf{由订货方案最优解反求选购方案$z_2$:}利用我们提出的贪婪法与0-1背包（动态规划）结合的算法得出最少损耗量对应的转运方案，并以此反求其对应的选购方案。
+        \end{itemize}
     \item[$\blacktriangleright$] \textbf{处理权衡向量:}随机生成大量权衡向量用于不同选购方案的评估。
 \end{description}
 \subsubsection*{建立$MOEA/D$与遗传算法结合的模型}
@@ -693,6 +693,36 @@ $MOEA/D$算法于2007年由张清富等人提出，其特点是能够将多目�
     \item[$\bigstar$] \textbf{问题三求解结果}结果
 \end{description}
 \subsection{问题四模型的建立与求解}
+\subsubsection{问题四模型的建立}
+由于在之前的问题中物流的运货能力由于受到供应方的限制
+并未能够被最大程度利用，在供应链管理中，供应方，运输方
+，收货方应当建立信息共享机制，
+我们在同时考虑到供应商供货能力，运货商运货能力的情况下
+重新指定运送方案。
+\subsubsection*{求解信息共享后最大化供货能力}
+与前一问类似，依然使用贪婪和0-1背包动态规划的方法求得
+最大化运货商能力的供货能力，并以此作为提升科技能力后的
+产量。
+\subsubsection*{求解信息共享后最优转运方案}
+由于我们前文已经得出了有供货方案求得转运方案的通用方法，
+故此问直接调用程序即可。
+
+\subsubsection{问题四模型的求解}
+\begin{description}
+    \item[$\blacktriangleright$] \textbf{Step1} 读取转化产能表
+    \item[$\blacktriangleright$] \textbf{Step2} 使用贪婪算法对承运商排序
+    \item[$\blacktriangleright$] \textbf{Step3} 使用0-1背包动态规划算法
+        \begin{itemize}
+            \item \textbf{Step3.1} 遍历所有天数
+            \item \textbf{Step3.2} 根据产能遍历所有空间
+            \item \textbf{Step3.3} 状态转移
+        \end{itemize}
+    \item[$\blacktriangleright$] \textbf{Step4} 得到转运方案
+    \item[$\blacktriangleright$] \textbf{Step5} 反推出最大订货方案
+\end{description}
+
+
+
 \section{模型的分析与检验}
 \subsection{问题一结果的分析与检验}
 对于问题一，可以通过对比两种算法的运行结果来检验得到结果的正确性。通过对比两个五十家重要供应商名单的列表，容易发现：结合了熵权法的TOPSIS法与层次分析法得到的结果无论是涵盖的供应商还是其排列顺序都几乎
@@ -709,6 +739,11 @@ $MOEA/D$算法于2007年由张清富等人提出，其特点是能够将多目�
 \subsection{问题二结果的分析与检验}
 \subsection{问题三结果的分析与检验}
 \subsection{问题四结果的分析与检验}
+经过对结果进行验证，新方案每周的实际接受量均值相较于原
+本的平均供货量提升了$1.68$倍，相较于原来$2.82 \times 10^4$的产能
+提高了$1.09$倍
+因此，在掌握产能提升的前提下，本企业可以通过技术改革
+和合理安排将产能提高至每周$3.1 \times 10^ 4$立方米
 
 \section{模型的评价、改进与推广}
 \begin{description}
